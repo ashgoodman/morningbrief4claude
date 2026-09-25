@@ -43,6 +43,19 @@ asleep.
 - `/mb4c:brief --no-blocks`: skip the time-block proposals.
 - `/mb4c:setup`: set up or check connections and the schedule.
 
+## Day sheet
+
+`dashboard/index.html` is an interactive dashboard published as a Claude
+artifact. It reads Gmail and Google Calendar through the viewer's own
+connectors, asks Claude to rank new messages, and keeps what you do with
+each item (done, replied, delegated, remind me in N days, move to another
+day, change priority, remove) in the artifact's per-viewer storage. It can
+move calendar events and book work blocks, each only on an explicit tap.
+
+Claude's help centre documents artifacts that use connectors and stored
+data on the web and Claude Desktop; the mobile apps are documented as able
+to view artifacts.
+
 ## WhatsApp
 
 WhatsApp Business is optional and takes a one-time setup of about fifteen
@@ -78,6 +91,7 @@ so something has to check it before passing messages on.
 | --- | --- |
 | `.claude-plugin/marketplace.json` | Makes this repo a plugin marketplace |
 | `plugin/` | The plugin: the `brief` and `setup` skills |
+| `dashboard/index.html` | The interactive day sheet, published as a Claude artifact |
 | `inbox/` | The WhatsApp inbox each business deploys (Cloudflare Worker + D1) |
 | `relay/` | The relay MB4C runs (Cloudflare Worker + D1) |
 | `docs/WHATSAPP.md` | Connecting WhatsApp, for business owners |
