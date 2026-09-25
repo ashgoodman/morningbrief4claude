@@ -1,0 +1,11 @@
+{
+  "name": "mb4c-relay",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Checks Meta's webhook signatures and forwards each business's WhatsApp messages to its own inbox.",
+  "scripts": {
+    "test": "node test/relay.test.mjs",
+    "deploy": "wrangler deploy"
+  }
+}

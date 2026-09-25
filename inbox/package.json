@@ -1,0 +1,11 @@
+{
+  "name": "mb4c-whatsapp-inbox",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Your own store for WhatsApp Business messages, read by Claude as a custom connector.",
+  "scripts": {
+    "test": "node test/inbox.test.mjs",
+    "deploy": "wrangler deploy"
+  }
+}

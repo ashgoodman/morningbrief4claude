@@ -1,0 +1,23 @@
+# MB4C relay. Run by the Meta Tech Provider (one instance for everyone).
+# Copy to wrangler.toml, fill in the ids, then see ../docs/RELAY.md.
+name = "mb4c-relay"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+workers_dev = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "mb4c-relay"
+database_id = "YOUR_DATABASE_ID"
+
+[vars]
+META_APP_ID = "YOUR_META_APP_ID"
+# Embedded Signup configuration id (App Dashboard > Facebook Login for Business > Configurations)
+META_CONFIG_ID = "YOUR_CONFIGURATION_ID"
+# The Graph API version the app is on, e.g. "v21.0"
+GRAPH_VERSION = "YOUR_GRAPH_API_VERSION"
+
+# Secrets, set with `wrangler secret put <NAME>`, never in this file:
+#   META_APP_SECRET    App Dashboard > App settings > Basic
+#   META_VERIFY_TOKEN  any long random string; the same value goes in the
+#                      App Dashboard webhook settings as the verify token

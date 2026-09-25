@@ -1,0 +1,20 @@
+// MB4C WhatsApp inbox. Deploy your own copy; it stores your messages in
+// your own Cloudflare account. See ../docs/WHATSAPP.md.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "mb4c-whatsapp-inbox",
+  "main": "src/index.js",
+  "compatibility_date": "2026-09-01",
+  "workers_dev": true,
+  "d1_databases": [
+    { "binding": "DB", "database_name": "mb4c-whatsapp-inbox" }
+  ],
+  // Daily clean-up of messages older than RETENTION_DAYS.
+  "triggers": { "crons": ["17 3 * * *"] },
+  "vars": {
+    // The MB4C relay that connects your WhatsApp number. Leave as is unless
+    // you run your own relay.
+    "RELAY_URL": "https://mb4c-relay.REPLACE-ME.workers.dev",
+    "RETENTION_DAYS": "200"
+  }
+}
