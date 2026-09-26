@@ -41,9 +41,12 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background
 .eyebrow{font:500 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 h1{font:700 clamp(26px,6vw,36px)/1.05 var(--display);margin:6px 0 0;text-wrap:balance;letter-spacing:-.01em}
 .summary{display:flex;flex-wrap:wrap;gap:6px 8px;margin-top:10px}
-.stat{display:inline-flex;align-items:baseline;gap:6px;padding:4px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:14px}
+.stat{display:inline-flex;align-items:baseline;gap:6px;padding:6px 12px;min-height:36px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:14px}
 .stat b{font:600 15px var(--mono);font-variant-numeric:tabular-nums}
 .stat.p1 b{color:var(--p1)}
+.stat[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.stat[aria-pressed="true"] b{color:inherit}
+.stat[disabled]{opacity:.5;cursor:default}
 .refresh{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
 .btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:9px 14px;min-height:44px;font-weight:600}
 .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
@@ -55,7 +58,7 @@ h1{font:700 clamp(26px,6vw,36px)/1.05 var(--display);margin:6px 0 0;text-wrap:ba
 
 /* layout */
 main{display:grid;gap:24px;margin-top:20px}
-@media (min-width:900px){main{grid-template-columns:minmax(300px,360px) 1fr;align-items:start}
+@media (min-width:900px){main:not(.single){grid-template-columns:minmax(300px,360px) 1fr;align-items:start}
   .schedule{position:sticky;top:calc(env(safe-area-inset-top,0px) + 150px)}}
 h2{font:600 19px/1.2 var(--display);margin:0}
 .sechead{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:10px}
@@ -125,7 +128,8 @@ details.fold .items{margin-top:8px}
 .field input,.field select{min-height:44px;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--ground);color:var(--ink);width:100%}
 .inline{display:flex;gap:8px;align-items:center;font-size:14px}
 .warn{font-size:14px;color:var(--p2)}
-.linkout{color:var(--accent);font-weight:600}
+.linkout{color:var(--accent);font-weight:600;display:inline-flex;align-items:center;min-height:44px}
+.linkout.quiet{font-weight:400;color:var(--muted);font-size:14px}
 .close{float:right;border:0;background:transparent;min-width:44px;min-height:44px;font-size:22px;color:var(--muted)}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--ground);padding:10px 16px;border-radius:10px;z-index:30;font-size:14px;max-width:calc(100% - 32px)}
 </style>
@@ -147,12 +151,12 @@ details.fold .items{margin-top:8px}
   </header>
 
   <main>
-    <section class="schedule" aria-labelledby="schedH">
+    <section class="schedule" id="schedSec" aria-labelledby="schedH">
       <div class="sechead"><h2 id="schedH">Today's schedule</h2><span class="count" id="schedCount"></span></div>
       <div id="schedule"><div class="note">Loading your calendar…</div></div>
     </section>
 
-    <section aria-labelledby="needH">
+    <section id="needSec" aria-labelledby="needH">
       <div class="sechead"><h2 id="needH">Needs you</h2><span class="count" id="needCount"></span></div>
       <div class="filters" id="filters" role="group" aria-label="Show"></div>
       <div id="list"><div class="note">Loading your messages…</div></div>
@@ -191,7 +195,7 @@ const HANDLED = { done: "Done", removed: "Removed", replied: "Replied", delegate
 const S = {
   uid: null, db: null, mcp: null, sample: null, itemsRef: null, profileRef: null,
   items: new Map(), profile: {}, events: [], eventsState: "loading", eventsErr: null,
-  gmailErr: null, waErr: null, waAvailable: false, busy: false, filter: "all",
+  gmailErr: null, waErr: null, waAvailable: false, busy: false, filter: "all", view: "all",
   sheet: null,
 };
 const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -530,16 +534,28 @@ function render() {
   const p1 = sig.filter((i) => effPrio(i) === 1).length;
   const calls = sig.filter((i) => (i.tags || []).includes("call_back")).length;
   const blocks = S.events.filter((e) => String(e.summary || "").startsWith(BLOCK_PREFIX)).length;
-  $("summary").replaceChildren(
-    h("span", { class: "stat p1" }, h("b", {}, p1), "for today"),
-    h("span", { class: "stat" }, h("b", {}, sig.length), "waiting on you"),
-    h("span", { class: "stat" }, h("b", {}, calls), calls === 1 ? "call-back" : "call-backs"),
-    h("span", { class: "stat" }, h("b", {}, S.events.length), S.events.length === 1 ? "event" : "events"),
-    blocks ? h("span", { class: "stat" }, h("b", {}, blocks), blocks === 1 ? "work block" : "work blocks") : null,
-  );
+  // The summary doubles as the page's main filter.
+  const views = [
+    ["all", null, "All"],
+    ["today", p1, "for today", "p1"],
+    ["waiting", sig.length, "waiting on you"],
+    ["calls", calls, calls === 1 ? "call-back" : "call-backs"],
+    ["events", S.events.length, S.events.length === 1 ? "event" : "events"],
+    blocks ? ["blocks", blocks, blocks === 1 ? "work block" : "work blocks"] : null,
+  ].filter(Boolean);
+  if (!views.some(([k]) => k === S.view)) S.view = "all";
+  $("summary").replaceChildren(...views.map(([k, n, label, cls]) => h("button", {
+    class: "stat" + (cls ? " " + cls : ""), type: "button", "aria-pressed": String(S.view === k),
+    disabled: n === 0 && S.view !== k, onclick: () => { S.view = S.view === k && k !== "all" ? "all" : k; render(); },
+  }, n === null ? null : h("b", {}, n), label)));
+  const showSched = ["all", "events", "blocks"].includes(S.view);
+  const showNeed = !["events", "blocks"].includes(S.view);
+  $("schedSec").hidden = !showSched;
+  $("needSec").hidden = !showNeed;
+  document.querySelector("main").classList.toggle("single", !(showSched && showNeed));
   renderSchedule();
   renderList(open);
-  renderFolds(all);
+  if (S.view === "all") renderFolds(all); else $("folds").replaceChildren();
   if (S.sheet) renderSheet();
 }
 
@@ -548,7 +564,11 @@ function renderSchedule() {
   if (S.eventsState === "loading") return;
   if (S.eventsState === "error") { host.replaceChildren(h("div", { class: "note bad" }, S.eventsErr)); $("schedCount").textContent = ""; return; }
   const now = new Date();
-  const evs = S.events.filter((e) => { const st = S.items.get("ev-" + e.id); return !st || st.status !== "removed"; });
+  const evs = S.events.filter((e) => {
+    const st = S.items.get("ev-" + e.id);
+    if (S.view === "blocks" && !String(e.summary || "").startsWith(BLOCK_PREFIX)) return false;
+    return !st || st.status !== "removed";
+  });
   $("schedCount").textContent = evs.length ? `${evs.length} ${evs.length === 1 ? "event" : "events"}` : "";
   if (!evs.length) { host.replaceChildren(h("div", { class: "note" }, "Nothing on your calendar today.")); return; }
   host.replaceChildren(h("ol", { class: "timeline" }, evs.map((e) => {
@@ -568,6 +588,8 @@ function renderSchedule() {
 
 const FILTERS = [["all", "All"], ["email", "Email"], ["whatsapp", "WhatsApp"], ["call", "Call-backs"], ["work", "Work"]];
 function passes(it) {
+  if (S.view === "today" && effPrio(it) !== 1) return false;
+  if (S.view === "calls" && !(it.tags || []).includes("call_back")) return false;
   if (S.filter === "all") return true;
   if (S.filter === "email" || S.filter === "whatsapp") return it.source === S.filter;
   if (S.filter === "call") return (it.tags || []).includes("call_back");
@@ -631,6 +653,43 @@ function renderFolds(all) {
   ].filter(Boolean));
 }
 
+// --------------------------------------------------------------- app links
+//
+// What Google documents (checked 2026-09-26):
+// - iOS: Google's apple-app-site-association lists the Calendar app for
+//   /calendar/event links, so an event's https link can open the Calendar
+//   app. Gmail's app is listed only for passwords (webcredentials), not for
+//   links, so a mail.google.com link opens the web, and Google documents no
+//   scheme that opens a thread in the Gmail app.
+// - Android: Chrome's intent: links open a named app and fall back to
+//   S.browser_fallback_url when it isn't installed. Whether the Claude app's
+//   in-app view follows them is up to the Claude app, so the plain web link
+//   is always offered too.
+const STORE = {
+  gmail: { name: "Gmail", ios: "https://apps.apple.com/app/id422689480", android: "com.google.android.gm" },
+  calendar: { name: "Google Calendar", ios: "https://apps.apple.com/app/id909319292", android: "com.google.android.calendar" },
+};
+const UA = navigator.userAgent || "";
+const PLATFORM = /Android/i.test(UA) ? "android"
+  : (/iPhone|iPad|iPod/i.test(UA) || (/Macintosh/.test(UA) && navigator.maxTouchPoints > 1)) ? "ios" : "desktop";
+
+function appLinks(kind, webUrl) {
+  const app = STORE[kind];
+  const a = (href, label, cls = "linkout") => h("a", { class: cls, href, target: "_blank", rel: "noopener" }, label);
+  if (PLATFORM === "android") {
+    const u = new URL(webUrl);
+    const play = "https://play.google.com/store/apps/details?id=" + app.android;
+    const intent = `intent://${u.host}${u.pathname}${u.search}${u.hash}#Intent;scheme=https;package=${app.android};S.browser_fallback_url=${encodeURIComponent(play)};end`;
+    return [a(intent, `Open in the ${app.name} app`), a(webUrl, "Open on the web", "linkout quiet")];
+  }
+  if (PLATFORM === "ios") {
+    // Calendar event links are claimed by the Calendar app; Gmail links aren't.
+    const label = kind === "calendar" ? `Open in ${app.name}` : "Open in Gmail (web)";
+    return [a(webUrl, label), a(app.ios, `Get the ${app.name} app`, "linkout quiet")];
+  }
+  return [a(webUrl, `Open in ${app.name}`)];
+}
+
 // ------------------------------------------------------------------- sheet
 function openSheet(target) { S.sheet = { ...target, panel: null, error: null, working: false }; renderSheet(); }
 function closeSheet() { S.sheet = null; $("sheetHost").replaceChildren(); }
@@ -675,8 +734,8 @@ function renderSheet() {
   if (sh.error) body.push(h("div", { class: "note bad" }, sh.error));
 
   const links = [];
-  if (it && it.link) links.push(h("a", { class: "linkout", href: it.link, target: "_blank", rel: "noopener" }, "Open in Gmail"));
-  if (ev && ev.htmlLink) links.push(h("a", { class: "linkout", href: ev.htmlLink, target: "_blank", rel: "noopener" }, "Open in Google Calendar"));
+  if (it && it.link) links.push(...appLinks("gmail", it.link));
+  if (ev && ev.htmlLink) links.push(...appLinks("calendar", ev.htmlLink));
   if (it && it.callNumber) links.push(h("span", {}, "Call ", h("b", { style: "user-select:all" }, it.callNumber)));
 
   $("sheetHost").replaceChildren(h("div", { class: "scrim", onclick: (e) => { if (e.target === e.currentTarget) closeSheet(); } },
