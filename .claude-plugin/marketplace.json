@@ -8,7 +8,7 @@
     {
       "name": "mb4c",
       "source": "./plugin",
-      "description": "Each morning, triage unanswered email by priority, flag call-backs and real work, and propose calendar blocks to get it done."
+      "description": "A daily Day Sheet for Gmail and Google Calendar: every unanswered email ranked by priority, today's schedule, and one-tap actions to reply, book time, delegate, file or delete."
     }
   ]
 }

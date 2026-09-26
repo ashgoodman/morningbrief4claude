@@ -1,11 +1,17 @@
 {
   "name": "mb4c",
   "displayName": "Morning Brief for Claude",
-  "version": "0.1.0",
-  "description": "Each morning, triage unanswered email by priority, flag call-backs and real work, and propose calendar blocks to get it done.",
+  "version": "0.2.0",
+  "description": "A daily Day Sheet for Gmail and Google Calendar: every unanswered email ranked by priority, today's schedule, and one-tap actions to reply, book time, delegate, file or delete.",
   "author": {
     "name": "Ashley Goodman"
   },
   "repository": "https://github.com/ashgoodman/morningbrief4claude",
-  "keywords": ["productivity", "email", "calendar", "triage", "morning brief"]
+  "keywords": [
+    "productivity",
+    "email",
+    "calendar",
+    "triage",
+    "morning brief"
+  ]
 }

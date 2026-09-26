@@ -1,5 +1,4 @@
 node_modules/
 .wrangler/
-dist/
-relay/wrangler.toml
 .dev.vars
+.DS_Store
