@@ -13,4 +13,4 @@ jobs:
         with:
           node-version: 22
       - name: Day sheet
-        run: node dashboard/test/dashboard.test.mjs
+        run: node test/dashboard.test.mjs

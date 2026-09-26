@@ -3,7 +3,7 @@
 // Claude's runtime, so only its pure functions are run here.
 import { readFileSync } from "node:fs";
 
-const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
+const html = readFileSync(new URL("../plugin/skills/dashboard/day-sheet.html", import.meta.url), "utf8");
 const script = html.match(/<script>([\s\S]*)<\/script>/)[1];
 let failures = 0;
 const check = (label, cond) => { console.log((cond ? "ok   " : "FAIL ") + label); if (!cond) failures++; };

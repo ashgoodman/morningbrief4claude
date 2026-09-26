@@ -36,7 +36,14 @@ and run `/mb4c:setup` again.
 On a Team or Enterprise plan the organisation owner may need to enable these
 connectors first; if the user can't find them, say that.
 
-## Step 3: Run it once now
+## Step 3: Publish their Day Sheet
+
+The Day Sheet is the interactive dashboard: today's schedule and every
+unanswered email, ranked, with actions. Follow the `/mb4c:dashboard` skill to
+publish their own copy, give them the link, and have them open it once to
+allow its permissions.
+
+## Step 4: Run the text brief once
 
 Run the brief once so they can see it: follow the `/mb4c:brief` skill.
 Ask afterwards whether the priorities look right and note any preferences
@@ -44,7 +51,7 @@ they state (working hours, people who are always P1, senders who are always
 noise). Suggest they add those to **Settings → Profile → personal
 preferences** so every brief uses them.
 
-## Step 4: Schedule it every morning
+## Step 5: Schedule it every morning
 
 Explain that a scheduled task in Cowork runs in the cloud, so it runs even
 when their computer is asleep or Claude is closed. Tell them:

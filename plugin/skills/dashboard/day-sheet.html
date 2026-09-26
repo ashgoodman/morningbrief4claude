@@ -1130,7 +1130,8 @@ function attachmentsBlock(it) {
         h("span", { style: "overflow-wrap:anywhere;flex:1;min-width:140px" }, h("b", {}, a.filename), h("span", { class: "meta" }, " · " + (a.mimeType.split("/")[1] || a.mimeType))),
         busy ? h("span", { class: "meta" }, busy)
           : saved && saved.link ? h("span", { class: "row" }, ...appLinks("drive", saved.link))
-          : h("button", { class: "btn", type: "button", onclick: () => saveAttachment(it, a) }, "Save to Drive"));
+          : S.driveAvailable ? h("button", { class: "btn", type: "button", onclick: () => saveAttachment(it, a) }, "Save to Drive")
+          : h("span", { class: "meta" }, "Open in Gmail to save it"));
     }));
 }
 
@@ -1530,7 +1531,12 @@ render();
   }
   wakeFollowUps();
   if (!mcp) { setStatus("This page can't reach your connectors here. Open it in Claude, signed in.", true); return; }
-  try { S.fileArgs = !!(await mcp.listTools()).fileArgs; } catch (e) { S.fileArgs = false; }
+  try {
+    const lt = await mcp.listTools();
+    S.fileArgs = !!lt.fileArgs;
+    // Drive is optional: without it, attachments point to Gmail's own Add to Drive.
+    S.driveAvailable = (lt.servers || []).some((sv) => sv.server === DRIVE);
+  } catch (e) { S.fileArgs = false; S.driveAvailable = false; }
   render();
   const stale = !S.profile.lastRefreshAt || Date.now() - S.profile.lastRefreshAt > AUTO_REFRESH_MS;
   if (stale) refreshAll();
