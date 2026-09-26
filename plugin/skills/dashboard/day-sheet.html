@@ -128,6 +128,8 @@ details.fold .items{margin-top:8px}
 .act span{font-size:12px;color:var(--muted)}
 .act:hover{border-color:var(--accent)}
 .panel{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);display:grid;gap:10px}
+.sheetpanel{margin:0 0 14px;padding:0 0 14px;border-bottom:1px solid var(--line)}
+.sheetpanel > .panel:first-child{margin-top:0;padding-top:0;border-top:0}
 .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .field{display:grid;gap:4px;font-size:14px;color:var(--muted)}
 .field input,.field select{min-height:44px;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--ground);color:var(--ink);width:100%}
@@ -1001,7 +1003,7 @@ function itemRow(it, handled) {
     const label = { quick_reply: "Draft a quick reply", schedule: "Draft a reply", work: "Book time" }[t];
     return h("button", { class: "tag tagbtn " + TAGS[t][1], type: "button", title: TAGS[t][0], onclick: (e) => {
       e.stopPropagation();
-      openSheet({ kind: "item", id: it.id });
+      openSheet({ kind: "item", id: it.id, focus: true });
       S.sheet.panel = panel; renderSheet();
       if (panel === "draft") startDraft(it, false);
     } }, label + " →");
@@ -1269,7 +1271,7 @@ function renderSheet() {
   const evBase = ev ? { source: "event", kind: "event", ref: ev.id, who: title, subject: "Calendar", receivedAt: Date.now() } : {};
   const cur = () => S.items.get(id) || { ...evBase, id, status: "open" };
   const set = (patch, msg) => { const target = cur(); closeSheet(); if (!S.items.has(id)) saveItem(id, { ...evBase, status: "open" }); clearItem(S.items.get(id) || target, patch, msg); };
-  const panel = (name) => { sh.panel = sh.panel === name ? null : name; sh.error = null; renderSheet(); };
+  const panel = (name) => { sh.focus = false; sh.panel = sh.panel === name ? null : name; sh.error = null; sh.scrollToPanel = !!sh.panel; renderSheet(); };
 
   const acts = [];
   if (ev) {
@@ -1335,7 +1337,17 @@ function renderSheet() {
       email ? attachmentsBlock(it) : null,
       it && (it.tags || []).includes("call_back") ? callButtons(it) : null,
       ev ? inviteButtons(ev) : null,
-      h("div", { class: "acts" }, acts), body)));
+      // The open task sits above the action buttons, where it's seen at once.
+      body.length ? h("div", { class: "sheetpanel", id: "sheetPanel" }, body) : null,
+      // Opened from a quick action on a card: just that task, other actions folded.
+      sh.focus && sh.panel
+        ? foldEl("sheetMore", "More actions", h("div", { class: "acts", style: "margin-top:8px" }, acts))
+        : h("div", { class: "acts" }, acts))));
+  if (sh.scrollToPanel) {
+    sh.scrollToPanel = false;
+    const el = document.getElementById("sheetPanel");
+    if (el) el.scrollIntoView({ block: "nearest" });
+  }
 }
 
 async function gmailAct(it, what) {
