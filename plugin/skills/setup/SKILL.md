@@ -49,7 +49,8 @@ Run the brief once so they can see it: follow the `/mb4c:brief` skill.
 Ask afterwards whether the priorities look right and note any preferences
 they state (working hours, people who are always P1, senders who are always
 noise). Suggest they add those to **Settings → Profile → personal
-preferences** so every brief uses them.
+preferences** so every brief uses them. Working days and hours for the Day
+Sheet itself are set on the Day Sheet, under its gear icon (Settings).
 
 ## Step 5: Schedule it every morning
 

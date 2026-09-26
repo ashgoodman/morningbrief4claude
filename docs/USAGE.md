@@ -41,37 +41,55 @@ update it later, type `/mb4c:dashboard`.
 
 ### Top of the page
 
-- **The date and Refresh.** The page refreshes by itself when you open it if
-  the last refresh was over two hours ago. **Refresh** does it now.
+- **The day, with ‹ and ›** to step back and forward a day at a time. The
+  label above the date says where you are (Today, Tomorrow, In 3 days…), and
+  **Back to today** appears when you've moved away. Moving between days
+  changes the schedule; your email list is always your inbox as it is now.
+- **Settings** (the gear) and **Refresh** (the circular arrow). The page
+  refreshes by itself when you open it if the last refresh is older than you
+  chose in Settings (two hours to begin with). **Refresh** does it now.
+- **Email from: Last 24 hours | Whole inbox**, under the two buttons. Last 24
+  hours brings in new email from the past day; anything already on your list
+  stays until you deal with it. Whole inbox sorts everything in your inbox
+  (up to 150 threads per refresh).
 - **Summary chips**, which are also filters. Tap one to see only those items,
   tap it again (or **All**) to see everything:
   - **for today**: P1 items
   - **waiting on you**: everything in P1, P2 and P3
   - **call-backs**
-  - **events**: today's schedule only
-  - **work blocks**: only the time you've booked with MB4C
-- **Email from: Last 24 hours | Whole inbox.** Last 24 hours brings in new
-  email from the past day; anything already on your list stays until you deal
-  with it. Whole inbox sorts everything in your inbox (up to 150 threads per
-  refresh). This switch only affects email: the calendar always shows today.
-- **Text: Small | Medium | Large.** Changes the size of all the text on the
-  page. Your choice is saved with your other settings, so it stays the same
-  the next time you open the Day Sheet.
-- **Archive in Gmail when handled.** Tick it once: from then on, marking an
-  email Done, Replied or Delegated also archives it in Gmail.
+  - **events**: the schedule of the day you're looking at
+  - **work blocks**: only the time you've booked with MB4C that day
 
-### Today's schedule
+### The schedule
 
-- Every event today from every calendar you haven't hidden, including
-  all-day events and birthdays.
-- **Calendars** lets you untick calendars you don't want here.
+- Every event that day from every calendar you haven't hidden in Settings,
+  including all-day events and birthdays.
 - **Join Meet** appears on video calls (it becomes **Join now** 15 minutes
   before). **Accept / Maybe / Decline** appear on invitations you haven't
   answered.
-- **Invitations to answer** lists unanswered invitations for the next two
-  weeks.
+- Under today: **Invitations to answer**, for the next two weeks.
+- On a later day: **Coming back** lists the reminders and delegated
+  check-backs due that day.
 - MB4C work blocks are marked **Block**. A block that has passed without
   being done offers **Move to tomorrow** in its ⋯ menu.
+
+### Plan my day
+
+**Plan my day** (or **Plan this day** on a later day) sits beside the
+schedule. It lays out your open **Work** emails and your **call-backs** in
+that day's free time:
+
+- Each Work email gets its own block, sized from Claude's estimate, between
+  30 minutes and 2 hours. Call-backs share one block: 15 minutes plus 5 per
+  call.
+- Highest priority goes first, each in the earliest gap it fits.
+- It only uses your working days and hours (set in Settings), keeps 10
+  minutes clear of other events, and never suggests time that has already
+  passed. On a day you don't work, it asks first: **Plan it anyway**, or plan
+  your next working day instead.
+- Untick any you don't want, then **Add to your calendar**. Anything that
+  doesn't fit is listed so you can plan it on the next day. Emails that
+  already have a block from today on are left out.
 
 ### Needs you
 
@@ -85,6 +103,20 @@ Every email still waiting on you, sorted by Claude into:
 Each group folds (Show / Hide), and remembers how you left it. The filter
 chips **All · Unread · Call-backs · Work** narrow the list further.
 
+### Start of the week
+
+On the first day of your week (Monday unless you change it in Settings), a
+**Start of the week** box sits at the top of Needs you. It lists:
+
+- emails that have been waiting on you (P2 and P3) for more than a week;
+- emails you sent that have had no reply for more than a week;
+- delegated emails with no check-back date;
+- reminders coming back this week.
+
+Deal with them from there as usual. **Done for this week** hides the box
+until your next week starts. If you skip the first day, it's still there the
+next day. You can turn it off, or bring it back, in Settings.
+
 The square at the left of each card: **filled @** = unread, **outlined @** =
 read but not actioned, **→** = an email you sent (Waiting on others).
 
@@ -95,7 +127,7 @@ Buttons you can tap straight from the card:
 | Button | What it does |
 |---|---|
 | **Draft a quick reply →** / **Draft a reply →** | Opens the item with Claude already writing a reply. Edit it, then **Save to Gmail Drafts**. Nothing is sent; you send it from Gmail. |
-| **Book time →** | Opens the item with the booking fields ready and the next free gap filled in. **Add to calendar** books an "MB4C: …" block. |
+| **Book time →** | Opens the item with the booking fields ready: your next working day, and the first free gap in your working hours from that day's calendar. Change the day and it finds a gap on that day. **Add to calendar** books an "MB4C: …" block. |
 | **Call +63…** | Starts a phone call on a phone. |
 | **WhatsApp** | Opens a WhatsApp chat with that number. Shown only when the email says the number is on WhatsApp. |
 | **Copy** | Copies the number. |
@@ -123,7 +155,7 @@ The actions:
 | **Done** | Clears it from your list. |
 | **Replied** | You've answered it. (MB4C also notices replies you send from Gmail and clears those itself.) |
 | **Draft reply** | Claude drafts a reply into Gmail Drafts. |
-| **Remind me** | Hides it until tomorrow, in 3 days, in a week, or in any number of days. Optionally puts a 15-minute reminder on your calendar that day so your phone alerts you. |
+| **Remind me** | Hides it until tomorrow, in 3 days, in a week, or in any number of days. Optionally puts a 15-minute reminder on your calendar that day (at the time set in Settings) so your phone alerts you. |
 | **Reschedule** | Moves it to another day. |
 | **Book time** | Books a work block for it (work items only). |
 | **Priority** | Moves it to P1, P2, P3, Noise or Spam. Your choice sticks. |
@@ -131,7 +163,7 @@ The actions:
 | **Log call** | "Spoke to them" (done), or "Left a message / no answer" (back in 2 days). Call-backs only. |
 | **Archive** | Takes it out of your Gmail inbox. |
 | **Label** | Files it under a Gmail label (or a new one), and optionally archives it. |
-| **Sender rule** | From now on, mail from this sender is always P1, P2 or P3, always noise (optionally filed to a label and archived), or always spam. Rules apply on every refresh and are listed under **Sender rules** at the bottom of the page, where you can remove them. |
+| **Sender rule** | From now on, mail from this sender is always P1, P2 or P3, always noise (optionally filed to a label and archived), or always spam. Rules apply on every refresh and are listed in **Settings**, where you can remove them. |
 | **Spam** | Reports it as spam in Gmail. |
 | **Delete** | Moves it to Gmail's Trash. |
 
@@ -142,10 +174,12 @@ options open under the email and above the action buttons.
 
 ### Calendar events' ⋯ menu
 
-**Done**, **Reschedule** (moves the event in Google Calendar and keeps its
-length; warns you if guests will be notified or you're not the organiser),
-**Delegated**, **Remove** (hides it from today's schedule), plus **Open in
-Google Calendar** and **Join Google Meet**.
+- **Done** ticks it off: it stays on the schedule with a check mark.
+  **Not done** takes the check mark off.
+- **Reschedule** moves the event in Google Calendar and keeps its length;
+  it warns you if guests will be notified or you're not the organiser.
+- **Delegated**, and **Remove** (hides it from the schedule).
+- **Open in Google Calendar** and **Join Google Meet**.
 
 ### Swipes (touch screens)
 
@@ -153,6 +187,65 @@ Google Calendar** and **Join Google Meet**.
 - **Swipe left**: see it again tomorrow.
 
 Both show **Undo**. Swipes work with a finger or pen, not a mouse drag.
+
+### Keyboard shortcuts (computers)
+
+Press **?** on the page to see them. **j** and **k** move between emails in
+Needs you, and the selected one is outlined.
+
+| Key | Does |
+|---|---|
+| **j** / **k** | Next / previous email |
+| **o** or **Enter** | Open its actions |
+| **e** | Done |
+| **r** | Draft a reply |
+| **b** | Book time (Work emails) |
+| **h** | Hide it until tomorrow |
+| **#** | Delete (moves it to Gmail's Trash, with Undo) |
+| **←** / **→** | Previous / next day |
+| **t** | Back to today |
+| **p** | Plan the day you're looking at |
+| **,** | Settings |
+| **Esc** | Close |
+
+Shortcuts don't fire while you're typing in a box. Turn them off in Settings.
+
+### Settings
+
+Everything you can change lives here. It's saved as you change it, and the
+same on every device you open the Day Sheet on.
+
+- **Email**
+  - **Archive in Gmail when handled.** Marking an email Done, Replied or
+    Delegated also archives it in Gmail.
+  - **Keep handled emails listed for** 7, 14 or 30 days.
+  - **Refresh by itself when opened**, if the last refresh is older than 1,
+    2, 4 or 8 hours, or never.
+- **Working days and hours**
+  - **Working days:** tick the days you work (Monday to Friday to begin
+    with).
+  - **Working day starts / ends** (9:00 to 18:00 to begin with). Book time
+    and Plan my day only suggest times in between, on your working days.
+- **Calendar**
+  - **Calendar reminders go at.** The time of day for Remind me's calendar
+    reminder.
+  - **Calendars to show.** Untick any you don't want on the Day Sheet.
+- **Week**
+  - **My week starts on** any day of the week.
+  - **Show the start-of-week reset**, and **Show this week's reset again**
+    after you've marked it done.
+- **Appearance**
+  - **Light or dark: Match system | Light | Dark.**
+  - **Colour theme:** MB4C's own colours, or one of five open-source code
+    editor themes: Solarized, Nord, Gruvbox, Catppuccin or Dracula, each in
+    its light and dark version. They use each theme's published colours
+    (all five are MIT licensed); a few colours are darkened or lightened so
+    text keeps a contrast of at least 4.5:1.
+- **Display**
+  - **Text size: Small | Medium | Large.** Changes the size of all the text
+    on the page.
+  - **Keyboard shortcuts** on or off, and **See the shortcuts**.
+- **Sender rules.** Every rule you've made, each with **Remove**.
 
 ### Further down the page
 
@@ -162,9 +255,9 @@ Both show **Undo**. Swipes work with a finger or pen, not a mouse drag.
 - **Reminders later**: items you've hidden, with the day they come back.
 - **Delegated**: with their check-back dates.
 - **Noise and likely spam**: with one-tap Spam and Delete.
-- **Handled**: everything you've dealt with in the last two weeks, each with
-  **Undo** (which also takes an email back out of Trash or Spam).
-- **Sender rules**.
+- **Handled**: everything you've dealt with recently (two weeks unless you
+  change it in Settings), each with **Undo** (which also takes an email back
+  out of Trash or Spam).
 
 ## Opening Google's apps on a phone
 
