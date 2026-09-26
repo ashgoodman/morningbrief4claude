@@ -133,7 +133,7 @@ details.fold .items{margin-top:8px}
 .close{float:right;border:0;background:transparent;min-width:44px;min-height:44px;font-size:22px;color:var(--muted)}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--ground);padding:10px 16px;border-radius:10px;z-index:30;font-size:14px;max-width:calc(100% - 32px)}
 /* v3 additions */
-.scope{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px;color:var(--muted)}
+.scope{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px;font-size:13px;color:var(--muted)}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
 .seg button{border:0;background:var(--surface);padding:5px 12px;min-height:32px;font-size:13px}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--ground)}
@@ -783,7 +783,7 @@ function pruneHandled() {
 async function clearItem(it, patch, msg) {
   const before = { status: it.status, snoozeUntil: it.snoozeUntil || null, delegatedTo: it.delegatedTo || null, followUpOn: it.followUpOn || null };
   saveItem(it.id, patch);
-  const archive = it.source === "email" && it.kind !== "awaiting" && S.profile.autoArchive && ["done", "replied", "delegated", "removed"].includes(patch.status);
+  const archive = it.source === "email" && it.kind !== "awaiting" && S.profile.autoArchive && ["done", "replied", "delegated"].includes(patch.status);
   toast(msg + (archive ? " and archived" : ""), () => saveItem(it.id, before));
   if (archive) {
     try { await archiveThread(it.ref); } catch (e) { setStatus(connectorMessage(GMAIL, e), true); }
@@ -820,7 +820,10 @@ function render() {
   const scope = S.profile.scope === "inbox" ? "inbox" : "day";
   $("scope").replaceChildren(h("span", {}, "Looking at"), h("div", { class: "seg", role: "group", "aria-label": "Which email to look at" },
     h("button", { type: "button", "aria-pressed": String(scope === "day"), onclick: () => setScope("day") }, "Last 24 hours"),
-    h("button", { type: "button", "aria-pressed": String(scope === "inbox"), onclick: () => setScope("inbox") }, "Whole inbox")));
+    h("button", { type: "button", "aria-pressed": String(scope === "inbox"), onclick: () => setScope("inbox") }, "Whole inbox")),
+    h("label", { class: "inline", for: "autoArchive", style: "margin-left:auto" },
+      h("input", { id: "autoArchive", type: "checkbox", checked: !!S.profile.autoArchive, onchange: (e) => { saveProfile({ autoArchive: e.target.checked }); toast(e.target.checked ? "Handled emails will be archived in Gmail" : "Handled emails stay in your Gmail inbox"); } }),
+      "Archive in Gmail when handled"));
 
   const showSched = ["all", "events", "blocks"].includes(S.view);
   const showNeed = !["events", "blocks"].includes(S.view);
@@ -1199,7 +1202,6 @@ function renderSheet() {
       acts.push(act("Sender rule", "Always P1, noise or spam", () => panel("rule")));
       acts.push(act("Spam", "Report to Gmail", () => gmailAct(it, "spam")));
     }
-    acts.push(act("Remove", "Take it off the list", () => set({ status: "removed" }, "Removed")));
   }
 
   const body = [];
@@ -1232,9 +1234,6 @@ function renderSheet() {
       email ? attachmentsBlock(it) : null,
       it && (it.tags || []).includes("call_back") ? callButtons(it) : null,
       ev ? inviteButtons(ev) : null,
-      email ? h("label", { class: "check", for: "autoArchive" },
-        h("input", { id: "autoArchive", type: "checkbox", checked: !!S.profile.autoArchive, onchange: (e) => saveProfile({ autoArchive: e.target.checked }) }),
-        h("span", {}, "When I mark an email done, replied, delegated or removed, also archive it in Gmail")) : null,
       h("div", { class: "acts" }, acts), body)));
 }
 
