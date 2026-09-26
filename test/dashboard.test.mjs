@@ -1,5 +1,5 @@
-// Checks the day sheet's script parses, and exercises the MIME code that
-// pulls an attachment out of a RAW Gmail message. The page itself needs
+// Checks the day sheet's script parses, exercises the MIME code that pulls
+// an attachment out of a RAW Gmail message, and the free-time planner. The page itself needs
 // Claude's runtime, so only its pure functions are run here.
 import { readFileSync } from "node:fs";
 
@@ -31,6 +31,47 @@ const p = f.findPart(tree, "1");
 check("part 1 is the PDF, folded filename read", p?.type === "application/pdf" && f.partFilename(p) === "Invoice 42.pdf");
 check("PDF bytes survive intact", Buffer.from(f.partBytes(p)).equals(pdf));
 check("quoted-printable decodes", Buffer.from(f.partBytes(f.findPart(tree, "2"))).toString() === "x=1,y=2");
+
+// Free time, the day planner and the start of the week.
+const line = (name) => {
+  const m = script.match(new RegExp(`^(?:function ${name}\\(|const ${name} = ).*$`, "m"));
+  if (!m) throw new Error("missing " + name);
+  return m[0];
+};
+const pure = script.slice(script.indexOf("// ---- pure: free time"), script.indexOf("// ---- pure: end"));
+const helpers = ["localDay", "addDays", "dayStart", "evStart", "evEnd", "evAllDay", "effPrio", "isSnoozed", "isOpen"].map(line).join("\n");
+const g = new Function(helpers + "\n" + pure + "\nreturn { freeRanges, planBlocks, planTasks, weekStartOf, dayStart };")();
+
+const at = (day, hm) => { const d = g.dayStart(day); const [a, b] = hm.split(":").map(Number); d.setHours(a, b, 0, 0); return d.getTime(); };
+const hm = (ms) => new Date(ms).toTimeString().slice(0, 5);
+const ev = (day, from, to, extra = {}) => ({ start: { dateTime: new Date(at(day, from)).toISOString() }, end: { dateTime: new Date(at(day, to)).toISOString() }, ...extra });
+const DAY = "2026-10-06", BEFORE = at("2026-10-05", "12:00");
+const events = [ev(DAY, "10:00", "11:00"), ev(DAY, "13:00", "14:00"), ev(DAY, "15:00", "16:00", { transparency: "transparent" }), { start: { date: DAY }, end: { date: "2026-10-07" } }];
+const ranges = g.freeRanges(DAY, events, "09:00", "18:00", BEFORE);
+check("free time keeps 10 minutes clear of meetings", ranges.map(([a, b]) => hm(a) + "-" + hm(b)).join(" ") === "09:00-09:50 11:10-12:50 14:10-18:00");
+check("free time starts from now, rounded to 15 minutes", hm(g.freeRanges(DAY, events, "09:00", "18:00", at(DAY, "11:07"))[0][0]) === "11:15");
+check("no free time on a day that has passed", g.freeRanges("2026-10-04", [], "09:00", "18:00", BEFORE).length === 0);
+
+const plan = g.planBlocks([{ key: "a", minutes: 60 }, { key: "b", minutes: 30 }, { key: "c", minutes: 120 }, { key: "d", minutes: 240 }], ranges);
+const where = Object.fromEntries(plan.placed.map((p) => [p.key, hm(p.start) + "-" + hm(p.end)]));
+check("planner puts each block in the earliest gap it fits", where.a === "11:10-12:10" && where.b === "09:00-09:30" && where.c === "14:10-16:10");
+check("planner reports what doesn't fit", plan.unplaced.length === 1 && plan.unplaced[0].key === "d");
+check("planner leaves 10 minutes between its own blocks", g.planBlocks([{ key: "x", minutes: 30 }, { key: "y", minutes: 30 }], [[at(DAY, "09:00"), at(DAY, "12:00")]]).placed.map((p) => hm(p.start)).join() === "09:00,09:40");
+
+const item = (id, extra) => ({ id, status: "open", kind: "inbound", priority: 2, receivedAt: 1, tags: [], ...extra });
+const tasks = g.planTasks([
+  item("w1", { tags: ["work"], estimateMin: 15, priority: 2 }),
+  item("w2", { tags: ["work", "call_back"], estimateMin: 90, priority: 1 }),
+  item("c1", { tags: ["call_back"], priority: 3, who: "Ana" }), item("c2", { tags: ["call_back"], priority: 2, who: "Ben" }),
+  item("booked", { tags: ["work"], blockStart: at(DAY, "09:00") }),
+  item("noise", { tags: ["work"], priority: 4 }), item("done", { tags: ["work"], status: "done" }),
+], at("2026-10-05", "00:00"));
+check("plan: highest priority first, calls grouped", tasks.map((t) => t.key).join() === "w2,w1,calls");
+check("plan: blocks are 30 minutes to 2 hours; calls 15 + 5 each", tasks[1].minutes === 30 && tasks[0].minutes === 90 && tasks[2].minutes === 30 && tasks[2].ids.length === 2);
+
+check("week starting Monday: Wed 30 Sep 2026 -> Mon 28 Sep", g.weekStartOf("2026-09-30", 1) === "2026-09-28");
+check("week starting Sunday: Wed 30 Sep 2026 -> Sun 27 Sep", g.weekStartOf("2026-09-30", 0) === "2026-09-27");
+check("week starting on the day itself", g.weekStartOf("2026-09-30", 3) === "2026-09-30");
 
 console.log(failures ? `\n${failures} FAILED` : "\nall passed");
 process.exit(failures ? 1 : 0);

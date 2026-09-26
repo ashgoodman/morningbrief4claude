@@ -6,7 +6,7 @@
 :root{
   --ground:#F4F6F5; --surface:#FFFFFF; --sunk:#EAEEEC; --ink:#15201C; --muted:#5B6863; --line:#D9E0DD;
   --accent:#0F6B5C; --accent-ink:#FFFFFF; --accent-soft:#DDEFEA;
-  --p1:#B83A26; --p1-soft:#F8E4DF; --p2:#9A6412; --p2-soft:#F6ECD9; --p3:#4E5D69; --p3-soft:#E6EBEF;
+  --p1:#B83A26; --p1-soft:#F8E4DF; --p2:#8A5A10; --p2-soft:#F6ECD9; --p3:#4E5D69; --p3-soft:#E6EBEF;
   --noise:#7A847F; --spam:#7D4A92; --spam-soft:#EFE4F4; --ok:#1E7A45;
   --shadow:0 12px 40px rgba(12,30,24,.18);
   --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
@@ -41,9 +41,15 @@ button{cursor:pointer}
 
 /* header */
 header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--ground);padding-block:16px 12px;border-bottom:1px solid var(--line)}
-.toprow{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.toprow{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 12px}
+.daynav{display:flex;align-items:center;gap:8px;min-width:0;flex:1 1 280px}
+.daylabel{min-width:0;flex:0 1 auto}
+.navbtn{flex:none;min-width:44px;min-height:44px;border:1px solid var(--line);background:var(--surface);border-radius:10px;font-size:1.25rem;line-height:1;color:var(--ink)}
+.navbtn:hover{border-color:var(--accent)}
+.todaybtn{flex:none}
 .eyebrow{font:500 0.75rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-h1{font:700 clamp(1.625rem,6vw,2.25rem)/1.05 var(--display);margin:6px 0 0;text-wrap:balance;letter-spacing:-.01em}
+h1{font:700 1.5rem/1.1 var(--display);margin:4px 0 0;text-wrap:balance;letter-spacing:-.01em}
+@media (min-width:600px){h1{font-size:2rem}}
 .summary{display:flex;flex-wrap:wrap;gap:6px 8px;margin-top:10px}
 .stat{display:inline-flex;align-items:baseline;gap:6px;padding:6px 12px;min-height:36px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:0.875rem}
 .stat b{font:600 0.9375rem var(--mono);font-variant-numeric:tabular-nums}
@@ -51,7 +57,8 @@ h1{font:700 clamp(1.625rem,6vw,2.25rem)/1.05 var(--display);margin:6px 0 0;text-
 .stat[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
 .stat[aria-pressed="true"] b{color:inherit}
 .stat[disabled]{opacity:.5;cursor:default}
-.refresh{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.refresh{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:4px;margin-left:auto}
+.topbtns{display:flex;gap:6px}
 .btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:9px 14px;min-height:44px;font-weight:600}
 .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 .btn.danger{color:var(--p1)}
@@ -65,8 +72,9 @@ main{display:grid;gap:24px;margin-top:20px}
 @media (min-width:900px){main:not(.single){grid-template-columns:minmax(300px,360px) 1fr;align-items:start}
   .schedule{position:sticky;top:calc(env(safe-area-inset-top,0px) + 150px)}}
 h2{font:600 1.1875rem/1.2 var(--display);margin:0}
-.sechead{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:10px}
-.sechead .count{font:500 0.8125rem var(--mono);color:var(--muted)}
+.sechead{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:10px}
+.sechead h2{flex:1 1 auto}
+.sechead .count{font:500 0.8125rem var(--mono);color:var(--muted);white-space:nowrap}
 .note{font-size:0.875rem;color:var(--muted);padding:12px 14px;border:1px dashed var(--line);border-radius:10px;background:var(--surface)}
 .note.bad{color:var(--p1);border-color:var(--p1)}
 
@@ -144,7 +152,6 @@ details.fold .items{margin-top:8px}
 .close{float:right;border:0;background:transparent;min-width:44px;min-height:44px;font-size:1.375rem;color:var(--muted)}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--ground);padding:10px 16px;border-radius:10px;z-index:30;font-size:0.875rem;max-width:calc(100% - 32px)}
 /* v3 additions */
-.scope{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px;font-size:0.8125rem;color:var(--muted)}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
 .seg button{border:0;background:var(--surface);padding:5px 12px;min-height:32px;font-size:0.8125rem}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--ground)}
@@ -170,36 +177,63 @@ textarea{width:100%;min-height:160px;border:1px solid var(--line);border-radius:
 .rules li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 12px;background:var(--surface);border:1px solid var(--line);border-radius:10px;font-size:0.875rem;overflow-wrap:anywhere}
 .check{display:flex;gap:10px;align-items:flex-start;font-size:0.875rem;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--ground);margin-bottom:12px}
 .check input{margin-top:3px;width:18px;height:18px;flex:none}
+/* v4: settings, plan, week reset, keyboard */
+.item.cursor{outline:2px solid var(--accent);outline-offset:2px}
+#list .item{scroll-margin:180px 0 24px}
+kbd{display:inline-block;min-width:1.75rem;text-align:center;font:500 0.75rem/1.5 var(--mono);border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;padding:0 6px;background:var(--ground);color:var(--ink)}
+.keys{display:grid;grid-template-columns:auto 1fr;gap:8px 14px;align-items:center;font-size:0.875rem;margin:0}
+.keys dt{display:flex;gap:4px;flex-wrap:wrap}
+.keys dd{margin:0}
+.setgroup{display:grid;gap:10px;padding:14px 0;border-top:1px solid var(--line)}
+.setgroup:first-of-type{border-top:0;padding-top:4px}
+.setgroup h4{font:600 1rem var(--display);margin:0}
+.sethint{font-size:0.8125rem;color:var(--muted);margin:-4px 0 0}
+.setgroup .check{margin-bottom:0}
+.plan{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.plan .check{margin:0;align-items:center}
+.plan time{font:500 0.8125rem var(--mono);font-variant-numeric:tabular-nums;color:var(--muted);min-width:7.5rem}
+.plan .sub{display:block;font-size:0.8125rem;color:var(--muted)}
+.reset{border:1px solid var(--accent);background:var(--accent-soft);border-radius:12px;padding:12px 14px;margin-bottom:18px;display:grid;gap:10px}
+.reset h3{font:600 1.0625rem var(--display);margin:0}
+.reset .subhead{margin:4px 0 0}
+.reset .items{gap:6px}
 </style>
 
 <div class="wrap">
   <header class="top">
     <div class="toprow">
-      <div>
-        <div class="eyebrow" id="eyebrow">Morning Brief</div>
-        <h1 id="date">Today</h1>
+      <div class="daynav">
+        <button class="navbtn" id="prevDay" type="button" aria-label="Previous day">‹</button>
+        <div class="daylabel"><div class="eyebrow" id="rel">Today</div><h1 id="date">Today</h1></div>
+        <button class="navbtn" id="nextDay" type="button" aria-label="Next day">›</button>
+        <button class="chip todaybtn" id="todayBtn" type="button" hidden>Back to today</button>
       </div>
       <div class="refresh">
-        <button class="btn primary" id="refreshBtn" type="button">Refresh</button>
+        <div class="topbtns">
+          <button class="btn" id="settingsBtn" type="button">Settings</button>
+          <button class="btn primary" id="refreshBtn" type="button">Refresh</button>
+        </div>
         <span class="fresh" id="fresh"></span>
       </div>
     </div>
     <div class="summary" id="summary"></div>
-    <div class="scope" id="scope"></div>
     <div class="status" id="status" role="status" aria-live="polite">Loading your day…</div>
   </header>
 
   <main>
     <section class="schedule" id="schedSec" aria-labelledby="schedH">
-      <div class="sechead"><h2 id="schedH">Today's schedule</h2><span class="count" id="schedCount"></span><button class="chip" id="calsBtn" type="button">Calendars</button></div>
+      <div class="sechead"><h2 id="schedH">Today's schedule</h2><span class="count" id="schedCount"></span><button class="chip" id="planBtn" type="button" hidden>Plan my day</button></div>
       <div id="schedule"><div class="note">Loading your calendar…</div></div>
+      <div id="dueback"></div>
       <div id="invites"></div>
     </section>
 
     <section id="needSec" aria-labelledby="needH">
       <div class="sechead"><h2 id="needH">Needs you</h2><span class="count" id="needCount"></span></div>
+      <div id="reset"></div>
       <div class="filters" id="filters" role="group" aria-label="Show"></div>
       <p class="swipehint" id="swipehint" hidden>On a touch screen, swipe right for done, left to see it again tomorrow.</p>
+      <p class="swipehint" id="keyhint" hidden>Press <kbd>?</kbd> for keyboard shortcuts.</p>
       <div id="list"><div class="note">Loading your messages…</div></div>
       <div id="awaiting"></div>
       <div id="folds"></div>
@@ -218,8 +252,6 @@ const GMAIL = "Gmail";
 const CAL = "Google Calendar";
 const DRIVE = "Google Drive";
 const BLOCK_PREFIX = "MB4C: ";
-const AUTO_REFRESH_MS = 2 * 3600 * 1000;
-const HANDLED_KEEP_DAYS = 14;
 const INBOX_CAP = 150;           // threads per refresh in whole-inbox mode
 const PRIO = {
   1: { label: "P1", name: "Today" },
@@ -237,6 +269,12 @@ const HANDLED = { done: "Done", removed: "Removed", replied: "Replied", delegate
 const RULES = { p1: "Always P1", p2: "Always P2", p3: "Always P3", noise: "Always noise", spam: "Always spam" };
 const TEXT_SIZES = { small: "Small", medium: "Medium", large: "Large" };
 const TEXT_KEY = "mb4c.textSize";
+// Settings the viewer can change; these are the values until they do.
+const DEFAULTS = {
+  scope: "day", autoArchive: false, textSize: "medium", workStart: "09:00", workEnd: "18:00",
+  weekStart: 1, weekReset: true, shortcuts: true, autoRefreshHours: 2, keepDays: 14, remindAt: "09:00",
+};
+const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 // Text size is saved in the profile; this device also keeps a copy so the
 // page opens at the right size before the profile has loaded.
@@ -254,7 +292,9 @@ const S = {
   items: new Map(), profile: {}, events: [], invites: [], eventsState: "loading", eventsErr: null,
   gmailErr: null, busy: false, filter: "all", view: "all",
   labels: null, sheet: null, calendars: null,
+  day: null, dayCache: new Map(), calPromise: null, cursor: null,
 };
+const pref = (k) => (S.profile[k] === undefined || S.profile[k] === null ? DEFAULTS[k] : S.profile[k]);
 const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 const $ = (id) => document.getElementById(id);
 
@@ -280,8 +320,19 @@ function fmtTime(d) { return d.toLocaleTimeString([], { hour: "numeric", minute:
 function fmtDay(dayStr) {
   if (dayStr === localDay()) return "today";
   if (dayStr === addDays(localDay(), 1)) return "tomorrow";
+  if (dayStr === addDays(localDay(), -1)) return "yesterday";
   return dayStart(dayStr).toLocaleDateString([], { weekday: "short", day: "numeric", month: "short" });
 }
+// "today", "tomorrow", or "on Sat 3 Oct", to follow a verb.
+function onDay(dayStr) { const f = fmtDay(dayStr); return ["today", "tomorrow", "yesterday"].includes(f) ? f : "on " + f; }
+function relDay(dayStr) {
+  const n = Math.round((dayStart(dayStr) - dayStart(localDay())) / 86400000);
+  if (n === 0) return "Today";
+  if (n === 1) return "Tomorrow";
+  if (n === -1) return "Yesterday";
+  return n > 0 ? `In ${n} days` : `${-n} days ago`;
+}
+function fmtHM(hm) { const [a, b] = String(hm).split(":").map(Number); const d = new Date(); d.setHours(a || 0, b || 0, 0, 0); return fmtTime(d); }
 function age(ms) {
   if (!ms) return "";
   const m = Math.max(0, Math.round((Date.now() - ms) / 60000));
@@ -516,57 +567,41 @@ async function calendarsToRead() {
   return list.length || !S.calendars.length ? (list.length ? list : [{ id: "primary", summary: "Calendar", primary: true }]) : [];
 }
 
-function openCalendarsSheet() {
-  S.sheet = { kind: "calendars" };
-  const hidden = new Set(S.profile.hiddenCalendars || []);
-  const boxes = (S.calendars || []).map((c, i) => {
-    const box = h("input", { id: "cal" + i, type: "checkbox", checked: !hidden.has(c.id) });
-    box.addEventListener("change", () => {
-      const next = new Set(S.profile.hiddenCalendars || []);
-      if (box.checked) next.delete(c.id); else next.add(c.id);
-      saveProfile({ hiddenCalendars: [...next] });
-    });
-    return h("label", { class: "check", for: "cal" + i }, box, h("span", {}, c.summary));
-  });
-  const done = () => { closeSheet(); S.eventsState = "loading"; loadCalendar(true); };
-  $("sheetHost").replaceChildren(h("div", { class: "scrim", onclick: (e) => { if (e.target === e.currentTarget) done(); } },
-    h("div", { class: "sheet", role: "dialog", "aria-modal": "true", "aria-label": "Calendars to show" },
-      h("button", { class: "close", type: "button", "aria-label": "Close", onclick: done }, "×"),
-      h("h3", {}, "Calendars to show"),
-      h("div", { class: "meta" }, "Untick any you don't want on your day sheet."),
-      boxes.length ? boxes : h("div", { class: "note" }, "Couldn't list your calendars."),
-      h("div", { class: "row" }, h("button", { class: "btn primary", type: "button", onclick: done }, "Done")))));
-}
-
-async function loadCalendar(fresh) {
-  const today = localDay();
+// One day's events from every calendar the viewer hasn't hidden, not just
+// the primary one: birthdays and family events often live on their own
+// calendars. The connector leaves Birthday events out unless they're asked
+// for by type.
+async function fetchDayEvents(day, fresh) {
   const opts = fresh ? { cache: { refresh: true } } : undefined;
-  // Every calendar the viewer hasn't hidden, not just the primary one:
-  // birthdays and family events often live on their own calendars. The
-  // connector leaves Birthday events out unless they're asked for by type.
   const cals = await calendarsToRead();
   const results = await pool(cals, 4, async (c) => {
     const p = await call(CAL, "list_events", {
-      calendarId: c.id, startTime: dayStart(today).toISOString(), endTime: dayStart(addDays(today, 1)).toISOString(),
+      calendarId: c.id, startTime: dayStart(day).toISOString(), endTime: dayStart(addDays(day, 1)).toISOString(),
       orderBy: "startTime", pageSize: 100, timeZone: tz, eventType: EVENT_TYPES,
     }, opts);
     return ((p && p.events) || []).map((e) => ({ ...e, _cal: c.id, _calName: c.summary, _primary: !!c.primary }));
   });
   const ok = results.filter((r) => Array.isArray(r));
-  if (!ok.length && results.length) {
-    S.eventsState = "error"; S.eventsErr = connectorMessage(CAL, results[0] && results[0].__err);
-  } else {
-    const seen = new Set();
-    S.events = ok.flat().filter((e) => {
-      if (e.status === "cancelled") return false;
-      const key = (e.iCalUID || e.id) + "|" + JSON.stringify(e.start || {});
-      if (seen.has(key)) return false;
-      seen.add(key); return true;
-    }).sort((a, b) => Number(!evAllDay(b)) - Number(!evAllDay(a)) || (evStart(a) || 0) - (evStart(b) || 0));
-    S.eventsState = "ok";
-    const failed = cals.filter((c, i) => !Array.isArray(results[i])).map((c) => c.summary);
-    S.eventsErr = failed.length ? `Couldn't read ${failed.join(", ")}.` : null;
-  }
+  if (!ok.length && results.length) return { state: "error", events: [], err: connectorMessage(CAL, results[0] && results[0].__err) };
+  const seen = new Set();
+  const events = ok.flat().filter((e) => {
+    if (e.status === "cancelled") return false;
+    const key = (e.iCalUID || e.id) + "|" + JSON.stringify(e.start || {});
+    if (seen.has(key)) return false;
+    seen.add(key); return true;
+  }).sort((a, b) => Number(!evAllDay(b)) - Number(!evAllDay(a)) || (evStart(a) || 0) - (evStart(b) || 0));
+  const failed = cals.filter((c, i) => !Array.isArray(results[i])).map((c) => c.summary);
+  return { state: "ok", events, err: failed.length ? `Couldn't read ${failed.join(", ")}.` : null };
+}
+
+// Today's events (and invitations) drive the summary; other days load when viewed.
+function loadCalendar(fresh) { S.calPromise = loadToday(fresh); return S.calPromise; }
+async function loadToday(fresh) {
+  const today = localDay();
+  const opts = fresh ? { cache: { refresh: true } } : undefined;
+  const r = await fetchDayEvents(today, fresh);
+  S.eventsState = r.state; S.eventsErr = r.err;
+  if (r.state === "ok") S.events = r.events;
   try {
     const p = await call(CAL, "list_events", {
       startTime: dayStart(addDays(today, 1)).toISOString(), endTime: dayStart(addDays(today, 15)).toISOString(),
@@ -577,22 +612,100 @@ async function loadCalendar(fresh) {
   render();
 }
 
-function freeSlots(dayStr, minutes) {
-  const ws = S.profile.workStart || "09:00", we = S.profile.workEnd || "18:00";
-  const base = dayStart(dayStr);
-  const at = (hm) => { const [a, b] = hm.split(":").map(Number); const d = new Date(base); d.setHours(a, b, 0, 0); return d; };
-  let cursor = at(ws); const end = at(we);
-  if (dayStr === localDay()) { const n = new Date(); n.setMinutes(Math.ceil(n.getMinutes() / 15) * 15, 0, 0); if (n > cursor) cursor = n; }
-  const busy = (dayStr === localDay() ? S.events : [])
-    .filter((e) => !evAllDay(e) && e.transparency !== "transparent")
-    .map((e) => [evStart(e), evEnd(e)]).filter(([a, b]) => a && b).sort((x, y) => x[0] - y[0]);
-  const gap = 10 * 60000, need = minutes * 60000, out = [];
-  for (const [a, b] of busy) {
-    if (a - gap - cursor >= need) out.push(new Date(cursor));
-    if (b.getTime() + gap > cursor) cursor = new Date(b.getTime() + gap);
+function loadDay(day, fresh) {
+  if (day === localDay()) return loadCalendar(fresh);
+  const had = S.dayCache.get(day);
+  if (had && had.promise && !fresh) return had.promise;
+  const entry = { state: "loading", events: had ? had.events : [], err: null };
+  entry.promise = fetchDayEvents(day, fresh)
+    .then((r) => { Object.assign(entry, r); })
+    .catch((e) => { entry.state = "error"; entry.err = connectorMessage(CAL, e); })
+    .then(() => { if (S.day === day) render(); });
+  S.dayCache.set(day, entry);
+  return entry.promise;
+}
+function viewDay() {
+  if (S.day === localDay()) return { state: S.eventsState, events: S.events, err: S.eventsErr };
+  return S.dayCache.get(S.day) || { state: "loading", events: [], err: null };
+}
+// A day's events for finding free time; loads the day if it isn't loaded yet.
+async function eventsFor(day) {
+  if (day === localDay()) {
+    if (S.eventsState === "loading") await (S.calPromise || loadCalendar(false));
+    if (S.eventsState === "ok") return S.events;
+    throw new Error(S.eventsErr || "calendar unavailable");
   }
-  if (end - cursor >= need) out.push(new Date(cursor));
-  return out;
+  const c = S.dayCache.get(day);
+  if (!c || c.state === "loading") await loadDay(day, false);
+  const r = S.dayCache.get(day);
+  if (r && r.state === "ok") return r.events;
+  throw new Error((r && r.err) || "calendar unavailable");
+}
+function setDay(day) {
+  S.day = day;
+  if (day !== localDay() && !S.dayCache.has(day)) loadDay(day, false);
+  render();
+}
+
+// ---- pure: free time and planning (tested in test/dashboard.test.mjs)
+// Free stretches of a day inside working hours, leaving 10 minutes either
+// side of anything busy, and nothing before `now`. Times are epoch ms.
+function freeRanges(dayStr, events, workStart, workEnd, now) {
+  if (localDay(new Date(now)) > dayStr) return [];
+  const base = dayStart(dayStr);
+  const at = (hm) => { const [a, b] = hm.split(":").map(Number); const d = new Date(base); d.setHours(a, b, 0, 0); return d.getTime(); };
+  let cursor = at(workStart); const end = at(workEnd);
+  if (localDay(new Date(now)) === dayStr) { const n = new Date(now); n.setMinutes(Math.ceil(n.getMinutes() / 15) * 15, 0, 0); cursor = Math.max(cursor, n.getTime()); }
+  const busy = events.filter((e) => !evAllDay(e) && e.transparency !== "transparent")
+    .map((e) => [evStart(e), evEnd(e)]).filter(([a, b]) => a && b)
+    .map(([a, b]) => [a.getTime(), b.getTime()]).sort((x, y) => x[0] - y[0]);
+  const gap = 10 * 60000, out = [];
+  for (const [a, b] of busy) {
+    if (a - gap > cursor) out.push([cursor, Math.min(a - gap, end)]);
+    cursor = Math.max(cursor, b + gap);
+  }
+  if (end > cursor) out.push([cursor, end]);
+  return out.filter(([a, b]) => b > a);
+}
+// Places tasks, in order, each at the earliest free stretch it fits.
+function planBlocks(tasks, ranges) {
+  const free = ranges.map(([a, b]) => [a, b]);
+  const gap = 10 * 60000, placed = [], unplaced = [];
+  for (const t of tasks) {
+    const need = t.minutes * 60000;
+    const r = free.find(([a, b]) => b - a >= need);
+    if (!r) { unplaced.push(t); continue; }
+    placed.push({ ...t, start: r[0], end: r[0] + need });
+    r[0] += need + gap;
+  }
+  return { placed, unplaced };
+}
+// What to plan: each open Work email as its own block (30 minutes to 2
+// hours), and the call-backs together in one block of 15 minutes plus 5 per
+// call, highest priority first. Anything already booked from today on is left out.
+function planTasks(items, todayStartMs) {
+  const clamp = (m) => Math.min(120, Math.max(30, m));
+  const booked = (i) => i.blockStart && i.blockStart >= todayStartMs;
+  const open = items.filter((i) => isOpen(i) && effPrio(i) <= 3 && !booked(i))
+    .sort((a, b) => effPrio(a) - effPrio(b) || (a.receivedAt || 0) - (b.receivedAt || 0));
+  const work = open.filter((i) => (i.tags || []).includes("work"));
+  const calls = open.filter((i) => (i.tags || []).includes("call_back") && !(i.tags || []).includes("work"));
+  const tasks = work.map((i) => ({ key: i.id, ids: [i.id], kind: "work", prio: effPrio(i), minutes: clamp(i.estimateMin || 30), title: i.gist || i.subject || "Work" }));
+  if (calls.length) {
+    tasks.push({ key: "calls", ids: calls.map((i) => i.id), kind: "calls", prio: Math.min(...calls.map(effPrio)),
+      minutes: clamp(15 + 5 * calls.length), title: calls.length === 1 ? "Call back " + (calls[0].who || "") : `Call-backs (${calls.length})` });
+  }
+  return tasks.sort((a, b) => a.prio - b.prio);
+}
+function weekStartOf(dayStr, weekStart) {
+  const back = (dayStart(dayStr).getDay() - weekStart + 7) % 7;
+  return addDays(dayStr, -back);
+}
+// ---- pure: end
+
+function freeSlots(dayStr, minutes, events) {
+  return freeRanges(dayStr, events, pref("workStart"), pref("workEnd"), Date.now())
+    .filter(([a, b]) => b - a >= minutes * 60000).map(([a]) => new Date(a));
 }
 
 async function respond(ev, status) {
@@ -844,7 +957,9 @@ async function refreshAll() {
   S.busy = true; $("refreshBtn").disabled = true;
   setStatus(S.profile.scope === "inbox" ? "Checking your whole inbox and today's calendar…" : "Checking today's calendar and new email…");
   const toTriage = [];
+  S.dayCache.clear();
   const cal = loadCalendar(true);
+  if (S.day !== localDay()) loadDay(S.day, true);
   S.gmailErr = null;
   try { await refreshGmail(toTriage); } catch (e) { S.gmailErr = connectorMessage(GMAIL, e); }
   await triage(toTriage);
@@ -860,7 +975,7 @@ async function refreshAll() {
 }
 
 function pruneHandled() {
-  const cutoff = Date.now() - HANDLED_KEEP_DAYS * 86400000;
+  const cutoff = Date.now() - (Number(pref("keepDays")) || 14) * 86400000;
   for (const it of [...S.items.values()]) {
     if (it.status !== "open" && it.status !== "delegated" && (it.updatedAt || 0) < cutoff) {
       S.items.delete(it.id);
@@ -885,7 +1000,12 @@ async function clearItem(it, patch, msg) {
 // ------------------------------------------------------------------ render
 function render() {
   const today = localDay();
-  $("date").textContent = dayStart(today).toLocaleDateString([], { weekday: "long", day: "numeric", month: "long" });
+  if (!S.day) S.day = today;
+  if (S.day !== today && !S.dayCache.has(S.day)) loadDay(S.day, false);   // e.g. still open after midnight
+  const shown = dayStart(S.day);
+  $("date").textContent = shown.toLocaleDateString([], { weekday: "long", day: "numeric", month: "long", ...(shown.getFullYear() !== new Date().getFullYear() ? { year: "numeric" } : {}) });
+  $("rel").textContent = relDay(S.day);
+  $("todayBtn").hidden = S.day === today;
   const last = S.profile.lastRefreshAt;
   $("fresh").textContent = last ? "Updated " + fmtTime(new Date(last)) : "";
 
@@ -894,13 +1014,14 @@ function render() {
   const sig = open.filter((i) => effPrio(i) <= 3);
   const p1 = sig.filter((i) => effPrio(i) === 1).length;
   const calls = sig.filter((i) => (i.tags || []).includes("call_back")).length;
-  const blocks = S.events.filter((e) => String(e.summary || "").startsWith(BLOCK_PREFIX)).length;
+  const dayEvents = viewDay().events || [];
+  const blocks = dayEvents.filter((e) => String(e.summary || "").startsWith(BLOCK_PREFIX)).length;
   const views = [
     ["all", null, "All"],
     ["today", p1, "for today", "p1"],
     ["waiting", sig.length, "waiting on you"],
     ["calls", calls, calls === 1 ? "call-back" : "call-backs"],
-    ["events", S.events.length, S.events.length === 1 ? "event" : "events"],
+    ["events", dayEvents.length, dayEvents.length === 1 ? "event" : "events"],
     blocks ? ["blocks", blocks, blocks === 1 ? "work block" : "work blocks"] : null,
   ].filter(Boolean);
   if (!views.some(([k]) => k === S.view)) S.view = "all";
@@ -909,27 +1030,20 @@ function render() {
     disabled: n === 0 && S.view !== k, onclick: () => { S.view = S.view === k && k !== "all" ? "all" : k; render(); },
   }, n === null ? null : h("b", {}, n), label)));
 
-  const scope = S.profile.scope === "inbox" ? "inbox" : "day";
-  const textSize = TEXT_SIZES[S.profile.textSize] ? S.profile.textSize : document.documentElement.dataset.text;
-  $("scope").replaceChildren(h("span", {}, "Email from"), h("div", { class: "seg", role: "group", "aria-label": "Which email to look at; the calendar always shows today" },
-    h("button", { type: "button", "aria-pressed": String(scope === "day"), onclick: () => setScope("day") }, "Last 24 hours"),
-    h("button", { type: "button", "aria-pressed": String(scope === "inbox"), onclick: () => setScope("inbox") }, "Whole inbox")),
-    h("span", {}, "Text"), h("div", { class: "seg", role: "group", "aria-label": "Text size" },
-      ...Object.entries(TEXT_SIZES).map(([k, label]) => h("button", { type: "button", "aria-pressed": String(textSize === k), onclick: () => setTextSize(k) }, label))),
-    h("label", { class: "inline", for: "autoArchive", style: "margin-left:auto" },
-      h("input", { id: "autoArchive", type: "checkbox", checked: !!S.profile.autoArchive, onchange: (e) => { saveProfile({ autoArchive: e.target.checked }); toast(e.target.checked ? "Handled emails will be archived in Gmail" : "Handled emails stay in your Gmail inbox"); } }),
-      "Archive in Gmail when handled"));
-
   const showSched = ["all", "events", "blocks"].includes(S.view);
   const showNeed = !["events", "blocks"].includes(S.view);
   $("schedSec").hidden = !showSched;
   $("needSec").hidden = !showNeed;
   document.querySelector("main").classList.toggle("single", !(showSched && showNeed));
   $("swipehint").hidden = !TOUCH;
+  $("keyhint").hidden = PLATFORM !== "desktop" || !pref("shortcuts");
   renderSchedule();
+  renderDueBack(all);
   renderInvites();
+  renderReset(all);
   renderList(open);
   if (S.view === "all") { renderAwaiting(all); renderFolds(all); } else { $("awaiting").replaceChildren(); $("folds").replaceChildren(); }
+  applyCursor(false);
   if (S.sheet) renderSheet();
 }
 
@@ -948,17 +1062,22 @@ function setScope(scope) {
 
 function renderSchedule() {
   const host = $("schedule");
-  if (S.eventsState === "loading") return;
-  if (S.eventsState === "error") { host.replaceChildren(h("div", { class: "note bad" }, S.eventsErr)); $("schedCount").textContent = ""; return; }
-  const partial = S.eventsErr ? h("div", { class: "note bad", style: "margin-bottom:8px" }, S.eventsErr) : null;
+  const vd = viewDay(), today = localDay();
+  $("schedH").textContent = S.day === today ? "Today's schedule" : S.day === addDays(today, 1) ? "Tomorrow's schedule"
+    : S.day === addDays(today, -1) ? "Yesterday's schedule" : "Schedule for " + fmtDay(S.day);
+  $("planBtn").hidden = S.day < today || vd.state !== "ok";
+  $("planBtn").textContent = S.day === today ? "Plan my day" : "Plan this day";
+  if (vd.state === "loading") { host.replaceChildren(h("div", { class: "note" }, "Loading your calendar…")); $("schedCount").textContent = ""; return; }
+  if (vd.state === "error") { host.replaceChildren(h("div", { class: "note bad" }, vd.err)); $("schedCount").textContent = ""; return; }
+  const partial = vd.err ? h("div", { class: "note bad", style: "margin-bottom:8px" }, vd.err) : null;
   const now = new Date();
-  const evs = S.events.filter((e) => {
+  const evs = vd.events.filter((e) => {
     const st = S.items.get("ev-" + e.id);
     if (S.view === "blocks" && !String(e.summary || "").startsWith(BLOCK_PREFIX)) return false;
     return !st || st.status !== "removed";
   });
   $("schedCount").textContent = evs.length ? `${evs.length} ${evs.length === 1 ? "event" : "events"}` : "";
-  if (!evs.length) { host.replaceChildren(...[partial, h("div", { class: "note" }, "Nothing on your calendar today.")].filter(Boolean)); return; }
+  if (!evs.length) { host.replaceChildren(...[partial, h("div", { class: "note" }, `Nothing on your calendar ${onDay(S.day)}.`)].filter(Boolean)); return; }
   host.replaceChildren(...[partial].filter(Boolean), h("ol", { class: "timeline" }, evs.map((e) => {
     const a = evStart(e), b = evEnd(e), all = evAllDay(e);
     const st = S.items.get("ev-" + e.id);
@@ -978,9 +1097,19 @@ function renderSchedule() {
   })));
 }
 
+// On a later day: reminders and delegated check-backs that come back that day.
+function renderDueBack(all) {
+  const host = $("dueback");
+  if (S.day <= localDay() || !["all", "events"].includes(S.view)) { host.replaceChildren(); return; }
+  const l = all.filter((i) => (i.status === "open" && i.snoozeUntil === S.day) || (i.status === "delegated" && i.followUpOn === S.day));
+  host.replaceChildren(...(l.length ? [h("h3", { class: "subhead" }, `Coming back ${onDay(S.day)} (${l.length})`),
+    h("ul", { class: "items" }, l.map((i) => itemRow(i, i.status === "delegated" ? "Check back on " + (i.delegatedTo || "this") : null)))] : []));
+}
+
 function renderInvites() {
   const host = $("invites");
-  if (!S.invites.length || !["all", "events"].includes(S.view)) { host.replaceChildren(); return; }
+  // Invitations cover the next two weeks, so they sit under today only.
+  if (!S.invites.length || !["all", "events"].includes(S.view) || S.day !== localDay()) { host.replaceChildren(); return; }
   host.replaceChildren(h("h3", { class: "subhead" }, `Invitations to answer (${S.invites.length})`),
     h("ol", { class: "timeline" }, S.invites.map((e) => {
       const a = evStart(e);
@@ -1061,7 +1190,7 @@ function itemRow(it, handled) {
   if (it.status === "delegated" && it.followUpOn) tags.push(h("span", { class: "tag info" }, "Check back " + fmtDay(it.followUpOn)));
   if (handled) tags.push(h("span", { class: "tag info" }, handled));
   const showCalls = !handled && (it.tags || []).includes("call_back");
-  const li = h("li", { class: "item" + (handled ? " handled" : "") },
+  const li = h("li", { class: "item" + (handled ? " handled" : ""), "data-id": it.id },
     h("div", { class: "src" + (it.unread && !handled ? " unread" : ""), title: it.kind === "awaiting" ? "You sent this" : it.unread ? "Unread" : "Read, not actioned",
       "aria-label": "Email" + (it.kind === "awaiting" ? ", sent by you" : it.unread ? ", unread" : ", read") }, srcLabel),
     h("div", {},
@@ -1123,23 +1252,44 @@ function renderFolds(all) {
   const noise = all.filter((i) => isOpen(i) && effPrio(i) >= 4 && passes(i)).sort((a, b) => effPrio(b) - effPrio(a));
   const delegated = all.filter((i) => i.status === "delegated");
   const handled = all.filter((i) => i.status !== "open" && i.status !== "delegated").sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0)).slice(0, 40);
-  const rules = Object.entries(S.profile.senderRules || {});
   const fold = (title, items, rowFn) => items.length ? foldEl(title, `${title} (${items.length})`, h("ul", { class: "items" }, items.map(rowFn))) : null;
   $("folds").replaceChildren(...[
-    fold("Reminders later", snoozed, (i) => {
-      const r = itemRow(i), chip = h("span", { class: "tag info" }, "Back " + fmtDay(i.snoozeUntil));
-      const tags = r.querySelector(".tags");
-      if (tags) tags.append(chip); else r.children[1].append(h("div", { class: "tags" }, chip));
-      return r;
-    }),
+    fold("Reminders later", snoozed, (i) => withChip(itemRow(i), "Back " + fmtDay(i.snoozeUntil))),
     fold("Delegated", delegated, (i) => itemRow(i, "Delegated" + (i.delegatedTo ? " to " + i.delegatedTo : ""))),
     fold("Noise and likely spam", noise, (i) => itemRow(i)),
     fold("Handled", handled, (i) => itemRow(i, (HANDLED[i.status] || i.status) + (i.filedTo ? " to " + i.filedTo : "") + (i.autoClosed ? " (you replied)" : ""))),
-    rules.length ? foldEl("rules", `Sender rules (${rules.length})`,
-      h("ul", { class: "rules" }, rules.sort((a, b) => a[0].localeCompare(b[0])).map(([addr, r]) => h("li", {},
-        h("span", {}, h("b", {}, addr), " · ", RULES[r.rule] + (r.labelName ? ` → ${r.labelName}` : "")),
-        h("button", { class: "undo", type: "button", onclick: () => { const next = { ...(S.profile.senderRules || {}) }; delete next[addr]; saveProfile({ senderRules: next }); render(); toast("Rule removed"); } }, "Remove"))))) : null,
   ].filter(Boolean));
+}
+
+// ------------------------------------------------------------ week reset
+// From the first day of the viewer's week until they dismiss it: what has
+// been sitting longest, so it can be cleared or pushed on.
+function renderReset(all) {
+  const host = $("reset");
+  const wk = weekStartOf(localDay(), Number(pref("weekStart")));
+  if (!pref("weekReset") || S.view !== "all" || S.profile.weekResetDone === wk) { host.replaceChildren(); return; }
+  const weekAgo = Date.now() - 7 * 86400000;
+  const oldest = (l) => l.sort((a, b) => (a.receivedAt || 0) - (b.receivedAt || 0)).slice(0, 8);
+  const waiting = oldest(all.filter((i) => isOpen(i) && [2, 3].includes(effPrio(i)) && (i.receivedAt || Date.now()) < weekAgo));
+  const unanswered = oldest(all.filter((i) => i.kind === "awaiting" && i.status === "open" && !isSnoozed(i) && (i.receivedAt || Date.now()) < weekAgo));
+  const loose = all.filter((i) => i.status === "delegated" && !i.followUpOn && (i.updatedAt || Date.now()) < weekAgo);
+  const back = all.filter((i) => isSnoozed(i) && i.snoozeUntil <= addDays(wk, 6)).sort((a, b) => a.snoozeUntil.localeCompare(b.snoozeUntil));
+  const part = (title, l, row) => (l.length ? [h("h4", { class: "subhead" }, `${title} (${l.length})`), h("ul", { class: "items" }, l.map(row))] : []);
+  const any = waiting.length + unanswered.length + loose.length + back.length;
+  const week = dayStart(wk).toLocaleDateString([], { weekday: "short", day: "numeric", month: "short" });
+  host.replaceChildren(h("div", { class: "reset", role: "region", "aria-label": "Start of the week" },
+    h("div", { class: "row", style: "justify-content:space-between" }, h("h3", {}, "Start of the week"),
+      h("button", { class: "btn", type: "button", onclick: () => { saveProfile({ weekResetDone: wk }); render(); toast("Hidden until next week", () => { saveProfile({ weekResetDone: null }); render(); }); } }, "Done for this week")),
+    h("p", { class: "sethint", style: "margin:0" }, any ? `Week of ${week}. What's been sitting longest: clear it, delegate it or give it a day.` : `Week of ${week}. Nothing has been waiting on you for more than a week.`),
+    ...part("Waiting on you for over a week", waiting, (i) => itemRow(i)),
+    ...part("No reply to you for over a week", unanswered, (i) => itemRow(i)),
+    ...part("Delegated with no check-back date", loose, (i) => itemRow(i, "Delegated" + (i.delegatedTo ? " to " + i.delegatedTo : ""))),
+    ...part("Coming back this week", back, (i) => withChip(itemRow(i), "Back " + fmtDay(i.snoozeUntil)))));
+}
+function withChip(row, text) {
+  const chip = h("span", { class: "tag info" }, text), tags = row.querySelector(".tags");
+  if (tags) tags.append(chip); else row.children[1].append(h("div", { class: "tags" }, chip));
+  return row;
 }
 
 // ------------------------------------------------------------- attachments
@@ -1297,13 +1447,19 @@ function openSheet(target) {
     fullThread(it.ref, "PLAIN_TEXT").then((full) => saveItem(it.id, { attachments: attachmentsOf(full) })).catch(() => {});
   }
 }
-function closeSheet() { S.sheet = null; $("sheetHost").replaceChildren(); }
-document.addEventListener("keydown", (e) => { if (e.key === "Escape" && S.sheet) closeSheet(); });
+function closeSheet() { const sh = S.sheet; S.sheet = null; $("sheetHost").replaceChildren(); if (sh && sh.onClose) sh.onClose(); }
+function sheetShell(title, meta, content) {
+  $("sheetHost").replaceChildren(h("div", { class: "scrim", onclick: (e) => { if (e.target === e.currentTarget) closeSheet(); } },
+    h("div", { class: "sheet", role: "dialog", "aria-modal": "true", "aria-label": title },
+      h("button", { class: "close", type: "button", "aria-label": "Close", onclick: closeSheet }, "×"),
+      h("h3", {}, title), meta ? h("div", { class: "meta" }, meta) : null, content)));
+}
 function act(label, hint, onclick) { return h("button", { class: "act", type: "button", onclick }, h("b", {}, label), hint ? h("span", {}, hint) : null); }
 function sheetError(e, server) { S.sheet.working = false; S.sheet.error = server ? connectorMessage(server, e) : String(e); renderSheet(); }
 
 function renderSheet() {
   const sh = S.sheet; if (!sh) return;
+  if (sh.kind !== "item" && sh.kind !== "event") return;   // settings, plan and shortcuts draw themselves
   let title, meta, it = null, ev = null;
   if (sh.kind === "item") {
     it = S.items.get(sh.id); if (!it) return closeSheet();
@@ -1430,12 +1586,13 @@ function remindPanel(id, apply) {
     h("div", { class: "row" },
       h("label", { class: "field", for: "remindDays", style: "flex:1;min-width:140px" }, "Or in this many days", nIn),
       h("button", { class: "btn primary", type: "button", style: "align-self:end", onclick: () => { const n = Math.round(Number(nIn.value)); if (n >= 1 && n <= 365) go(n); else { S.sheet.error = "Enter a number of days from 1 to 365."; renderSheet(); } } }, "Remind me")),
-    h("label", { class: "inline", for: "remindCal" }, calBox, "Also put a 15-minute reminder on my calendar at 9:00 that day, so my phone alerts me"));
+    h("label", { class: "inline", for: "remindCal" }, calBox, `Also put a 15-minute reminder on my calendar at ${fmtHM(pref("remindAt"))} that day, so my phone alerts me`));
 }
 
 async function addReminderEvent(id, day) {
   const it = S.items.get(id) || {};
-  const start = dayStart(day); start.setHours(9, 0, 0, 0);
+  const [rh, rm] = String(pref("remindAt")).split(":").map(Number);
+  const start = dayStart(day); start.setHours(rh || 0, rm || 0, 0, 0);
   try {
     await call(CAL, "create_event", {
       summary: BLOCK_PREFIX + "Reminder: " + (it.who || "follow up"),
@@ -1443,7 +1600,7 @@ async function addReminderEvent(id, day) {
       description: [it.subject, it.gist, it.link].filter(Boolean).join("\n"),
       availability: "AVAILABILITY_FREE", overrideReminders: [{ method: "popup", minutes: 0 }],
     });
-    if (day === localDay()) loadCalendar(true);
+    loadDay(day, true);
     return true;
   } catch (e) { sheetError(e, CAL); return false; }
 }
@@ -1555,7 +1712,9 @@ async function moveEvent(ev, day, time) {
     if (ev._cal && ev._cal !== "primary") input.calendarId = ev._cal;
     await call(CAL, "update_event", input);
     await S.mcp.invalidate(CAL).catch(() => {});
-    closeSheet(); toast("Event moved to " + fmtDay(day)); loadCalendar(true);
+    closeSheet(); toast("Event moved to " + fmtDay(day));
+    S.dayCache.clear(); loadCalendar(true);
+    if (S.day !== localDay()) loadDay(S.day, true);
   } catch (e) { sheetError(e, CAL); }
 }
 
@@ -1577,13 +1736,22 @@ function eventReschedulePanel(ev) {
 
 function bookPanel(it) {
   const mins = it.estimateMin || 30;
-  const d = h("input", { id: "bookDay", type: "date", min: localDay(), value: localDay() });
+  const start = S.day > localDay() ? S.day : localDay();
+  const d = h("input", { id: "bookDay", type: "date", min: localDay(), value: start });
   const len = h("select", { id: "bookLen" }, [15, 30, 45, 60, 90, 120].map((m) => h("option", { value: String(m), selected: m === mins }, `${m} min`)));
   const t = h("input", { id: "bookTime", type: "time", step: "900" });
-  const suggest = () => {
-    const slots = freeSlots(d.value, Number(len.value));
-    if (slots.length) { t.value = slots[0].toTimeString().slice(0, 5); S.sheet.error = null; }
-    else { t.value = ""; S.sheet.error = d.value === localDay() ? "No free gap that long left today in your working hours. Try tomorrow." : null; }
+  const hint = h("div", { class: "meta", role: "status", style: "margin:0" });
+  // Suggests the first gap on that day's calendar inside working hours.
+  const suggest = async () => {
+    const day = d.value, m = Number(len.value);
+    if (!day) return;
+    hint.textContent = "Looking for a free slot…";
+    let evs;
+    try { evs = await eventsFor(day); } catch (e) { if (d.value === day) hint.textContent = "Couldn't read that day's calendar. Pick a start time yourself."; return; }
+    if (d.value !== day || Number(len.value) !== m) return;   // changed while loading
+    const slots = freeSlots(day, m, evs);
+    if (slots.length) { t.value = slots[0].toTimeString().slice(0, 5); hint.textContent = `First free ${m} minutes ${onDay(day)} in your working hours.`; }
+    else { t.value = ""; hint.textContent = `No free gap that long ${day === localDay() ? "left today" : onDay(day)} in your working hours (${fmtHM(pref("workStart"))}–${fmtHM(pref("workEnd"))}).`; }
   };
   suggest();
   d.addEventListener("change", suggest); len.addEventListener("change", suggest);
@@ -1599,8 +1767,9 @@ function bookPanel(it) {
         description: [`From: ${it.who}`, it.subject, it.link].filter(Boolean).join("\n"), availability: "AVAILABILITY_BUSY",
       });
       saveItem(it.id, { blockEventId: (p && p.id) || null, blockStart: s.getTime() });
+      await S.mcp.invalidate(CAL).catch(() => {});
       closeSheet(); toast(`Booked ${fmtDay(d.value)} at ${fmtTime(s)}`);
-      if (d.value === localDay()) loadCalendar(true);
+      loadDay(d.value, true);
     } catch (e) { sheetError(e, CAL); }
   };
   return h("div", { class: "panel" },
@@ -1608,6 +1777,7 @@ function bookPanel(it) {
       h("label", { class: "field", for: "bookDay", style: "flex:1;min-width:140px" }, "Day", d),
       h("label", { class: "field", for: "bookLen", style: "flex:1;min-width:110px" }, "Length", len),
       h("label", { class: "field", for: "bookTime", style: "flex:1;min-width:110px" }, "Start", t)),
+    hint,
     h("div", { class: "row" }, h("button", { class: "btn primary", type: "button", disabled: S.sheet.working, onclick: go }, S.sheet.working ? "Booking…" : "Add to calendar")));
 }
 
@@ -1666,9 +1836,222 @@ function draftPanel(it) {
     h("div", { class: "row" }, buttons));
 }
 
+// ---------------------------------------------------------------- settings
+async function openSettings() {
+  await calendarsToRead();
+  const before = JSON.stringify(S.profile.hiddenCalendars || []);
+  S.sheet = { kind: "settings", onClose: () => {
+    if (JSON.stringify(S.profile.hiddenCalendars || []) !== before) {
+      S.eventsState = "loading"; S.dayCache.clear(); loadCalendar(true);
+      if (S.day !== localDay()) loadDay(S.day, true);
+    }
+    render();
+  } };
+  const saved = (patch, msg) => { saveProfile(patch); render(); toast(msg || "Saved"); };
+  const group = (title, hint, ...kids) => h("section", { class: "setgroup" }, h("h4", {}, title), hint ? h("p", { class: "sethint" }, hint) : null, ...kids);
+  const seg = (label, options, current, onpick) => {
+    const btns = options.map(([k, text]) => h("button", { type: "button", "aria-pressed": String(current === k), onclick: () => {
+      btns.forEach((b, i) => b.setAttribute("aria-pressed", String(options[i][0] === k))); onpick(k);
+    } }, text));
+    return h("div", { class: "row" }, h("span", { class: "meta", style: "margin:0;min-width:6rem" }, label), h("div", { class: "seg", role: "group", "aria-label": label }, btns));
+  };
+  const check = (id, checked, text, onchange) => {
+    const box = h("input", { id, type: "checkbox", checked: !!checked });
+    box.addEventListener("change", () => onchange(box.checked));
+    return h("label", { class: "check", for: id }, box, h("span", {}, text));
+  };
+  const select = (id, label, options, current, onchange) => {
+    const sel = h("select", { id }, options.map(([v, t]) => h("option", { value: String(v), selected: String(v) === String(current) }, t)));
+    sel.addEventListener("change", () => onchange(sel.value));
+    return h("label", { class: "field", for: id }, label, sel);
+  };
+  const time = (id, label, value, onchange) => {
+    const inp = h("input", { id, type: "time", step: "900", value });
+    inp.addEventListener("change", () => onchange(inp));
+    return h("label", { class: "field", for: id, style: "flex:1;min-width:130px" }, label, inp);
+  };
+
+  const hoursMsg = h("p", { class: "sethint", role: "status" });
+  const hours = { start: pref("workStart"), end: pref("workEnd") };
+  const setHours = (key) => (inp) => {
+    const next = { ...hours, [key]: inp.value };
+    if (!next.start || !next.end || next.start >= next.end) { hoursMsg.textContent = "The working day has to end after it starts."; return; }
+    Object.assign(hours, next); hoursMsg.textContent = "";
+    saved({ workStart: hours.start, workEnd: hours.end }, "Working hours saved");
+  };
+  const hidden = new Set(S.profile.hiddenCalendars || []);
+  const cals = (S.calendars || []).map((c, i) => check("setCal" + i, !hidden.has(c.id), c.summary, (on) => {
+    const next = new Set(S.profile.hiddenCalendars || []);
+    if (on) next.delete(c.id); else next.add(c.id);
+    saveProfile({ hiddenCalendars: [...next] });
+  }));
+
+  const wk = weekStartOf(localDay(), Number(pref("weekStart")));
+  const showAgain = h("button", { class: "btn", type: "button", hidden: S.profile.weekResetDone !== wk,
+    onclick: () => { showAgain.hidden = true; saved({ weekResetDone: null }, "This week's reset is back at the top of the page"); } }, "Show this week's reset again");
+
+  const rulesHost = h("div");
+  const drawRules = () => {
+    const rules = Object.entries(S.profile.senderRules || {}).sort((a, b) => a[0].localeCompare(b[0]));
+    rulesHost.replaceChildren(rules.length ? h("ul", { class: "rules" }, rules.map(([addr, r]) => h("li", {},
+      h("span", {}, h("b", {}, addr), " · ", RULES[r.rule] + (r.labelName ? ` → ${r.labelName}` : "")),
+      h("button", { class: "undo", type: "button", onclick: () => { const next = { ...(S.profile.senderRules || {}) }; delete next[addr]; saveProfile({ senderRules: next }); drawRules(); toast("Rule removed"); } }, "Remove"))))
+      : h("div", { class: "note" }, "No rules yet. Add one from an email's ⋯ menu, under Sender rule."));
+  };
+  drawRules();
+
+  sheetShell("Settings", "Saved as you change them, and the same on every device you open this on.", h("div", {},
+    group("Email", null,
+      seg("Email from", [["day", "Last 24 hours"], ["inbox", "Whole inbox"]], pref("scope"), (k) => setScope(k)),
+      h("p", { class: "sethint" }, `Whole inbox sorts up to ${INBOX_CAP} threads each refresh. Anything already on your list stays until you deal with it either way.`),
+      check("setArchive", pref("autoArchive"), "Archive in Gmail when I mark an email Done, Replied or Delegated", (on) => saved({ autoArchive: on }, on ? "Handled emails will be archived in Gmail" : "Handled emails stay in your Gmail inbox")),
+      h("div", { class: "row" },
+        select("setKeep", "Keep handled emails listed for", [[7, "7 days"], [14, "14 days"], [30, "30 days"]], pref("keepDays"), (v) => saved({ keepDays: Number(v) })),
+        select("setAuto", "Refresh by itself when opened, if the last refresh is older than", [[1, "1 hour"], [2, "2 hours"], [4, "4 hours"], [8, "8 hours"], [0, "Never (I'll tap Refresh)"]], pref("autoRefreshHours"), (v) => saved({ autoRefreshHours: Number(v) })))),
+    group("Calendar", "Book time and Plan my day only suggest times inside your working hours.",
+      h("div", { class: "row" }, time("setWorkStart", "Working day starts", hours.start, setHours("start")), time("setWorkEnd", "Working day ends", hours.end, setHours("end"))),
+      hoursMsg,
+      h("div", { class: "row" }, time("setRemindAt", "Calendar reminders go at", pref("remindAt"), (inp) => { if (inp.value) saved({ remindAt: inp.value }, "Reminder time saved"); })),
+      h("h4", { class: "subhead", style: "margin:6px 0 0" }, "Calendars to show"),
+      cals.length ? cals : h("div", { class: "note" }, "Couldn't list your calendars.")),
+    group("Week", "On the first day of your week, the top of the page shows what's been waiting longest, until you mark it done for the week.",
+      select("setWeekStart", "My week starts on", [1, 2, 3, 4, 5, 6, 0].map((d) => [d, WEEKDAYS[d]]), pref("weekStart"), (v) => saved({ weekStart: Number(v) }, `Your week starts on ${WEEKDAYS[Number(v)]}`)),
+      check("setReset", pref("weekReset"), "Show the start-of-week reset", (on) => saved({ weekReset: on })),
+      h("div", { class: "row" }, showAgain)),
+    group("Display", null,
+      seg("Text size", Object.entries(TEXT_SIZES), TEXT_SIZES[S.profile.textSize] ? S.profile.textSize : document.documentElement.dataset.text, (k) => setTextSize(k)),
+      check("setKeys", pref("shortcuts"), "Keyboard shortcuts on a computer", (on) => saved({ shortcuts: on })),
+      h("div", { class: "row" }, h("button", { class: "btn", type: "button", onclick: () => { closeSheet(); openHelp(); } }, "See the shortcuts"))),
+    group("Sender rules", "Mail from these senders is always sorted this way.", rulesHost)));
+}
+
+// ------------------------------------------------------------ plan the day
+async function openPlan(day) {
+  const sh = S.sheet = { kind: "plan", day };
+  const title = day === localDay() ? "Plan my day" : "Plan " + fmtDay(day);
+  sheetShell(title, "Looking for free time…", null);
+  let evs;
+  try { evs = await eventsFor(day); } catch (e) {
+    if (S.sheet === sh) sheetShell(title, null, h("div", { class: "note bad" }, "Couldn't read your calendar for that day, so there's nothing to plan around. Try Refresh."));
+    return;
+  }
+  if (S.sheet !== sh) return;
+  const meta = `Free time between ${fmtHM(pref("workStart"))} and ${fmtHM(pref("workEnd"))}, kept 10 minutes clear of other events. Change your hours in Settings.`;
+  const tasks = planTasks([...S.items.values()], dayStart(localDay()).getTime());
+  if (!tasks.length) { sheetShell(title, meta, h("div", { class: "note" }, "Nothing to plan: every Work and call-back email is already booked, or there aren't any.")); return; }
+  const { placed, unplaced } = planBlocks(tasks, freeRanges(day, evs, pref("workStart"), pref("workEnd"), Date.now()));
+  const boxes = placed.map((p, i) => h("input", { id: "plan" + i, type: "checkbox", checked: true }));
+  const btn = h("button", { class: "btn primary", type: "button" });
+  const msg = h("div", { role: "status" });
+  const label = () => { const n = boxes.filter((b) => b.checked && !b.disabled).length; btn.textContent = n ? `Add ${n} block${n === 1 ? "" : "s"} to your calendar` : "Tick at least one"; btn.disabled = !n; };
+  boxes.forEach((b) => b.addEventListener("change", label));
+  label();
+  btn.addEventListener("click", async () => {
+    btn.disabled = true; btn.textContent = "Booking…"; msg.replaceChildren();
+    let n = 0;
+    for (const [i, p] of placed.entries()) {
+      if (!boxes[i].checked || boxes[i].disabled) continue;
+      const covers = p.ids.map((id) => S.items.get(id)).filter(Boolean);
+      try {
+        const created = await call(CAL, "create_event", {
+          summary: BLOCK_PREFIX + String(p.title).slice(0, 80),
+          startTime: new Date(p.start).toISOString(), endTime: new Date(p.end).toISOString(), timeZone: tz,
+          description: covers.map((c) => [`From: ${c.who}`, c.subject, c.callNumber ? "Number: " + c.callNumber : null, c.link].filter(Boolean).join("\n")).join("\n\n"),
+          availability: "AVAILABILITY_BUSY",
+        });
+        for (const c of covers) saveItem(c.id, { blockEventId: (created && created.id) || null, blockStart: p.start });
+        boxes[i].checked = false; boxes[i].disabled = true; n++;
+      } catch (e) {
+        msg.replaceChildren(h("div", { class: "note bad" }, (n ? `Booked ${n}, then stopped. ` : "") + connectorMessage(CAL, e)));
+        label();
+        if (n) loadDay(day, true);
+        return;
+      }
+    }
+    await S.mcp.invalidate(CAL).catch(() => {});
+    if (S.sheet === sh) closeSheet();
+    toast(`Booked ${n} block${n === 1 ? "" : "s"} ${onDay(day)}`); loadDay(day, true);
+  });
+  const rows = placed.map((p, i) => h("li", {}, h("label", { class: "check", for: "plan" + i }, boxes[i],
+    h("time", {}, `${fmtTime(new Date(p.start))}–${fmtTime(new Date(p.end))}`),
+    h("span", {}, h("b", {}, p.title), h("span", { class: "sub" }, p.kind === "calls"
+      ? p.ids.map((id) => (S.items.get(id) || {}).who).filter(Boolean).join(", ")
+      : `${PRIO[p.prio].label} · ${p.minutes} min`)))));
+  sheetShell(title, meta, h("div", { style: "display:grid;gap:12px" },
+    placed.length ? h("ol", { class: "plan" }, rows) : h("div", { class: "note" }, `No free gap long enough ${onDay(day)}.`),
+    unplaced.length ? h("div", { class: "note" }, `Doesn't fit ${onDay(day)}: ${unplaced.map((t) => t.title).join("; ")}. Plan the next day for ${unplaced.length === 1 ? "it" : "these"}.`) : null,
+    msg,
+    placed.length ? h("div", { class: "row" }, btn) : null));
+}
+
+// -------------------------------------------------------------- keyboard
+const SHORTCUTS = [
+  [["j"], "Next email"], [["k"], "Previous email"], [["o", "Enter"], "Open its actions"],
+  [["e"], "Done"], [["r"], "Draft a reply"], [["b"], "Book time (Work emails)"], [["h"], "Hide it until tomorrow"],
+  [["#"], "Delete (moves it to Gmail's Trash)"], [["←", "→"], "Previous or next day"], [["t"], "Back to today"],
+  [["p"], "Plan the day you're looking at"], [[","], "Settings"], [["?"], "These shortcuts"], [["Esc"], "Close"],
+];
+function openHelp() {
+  S.sheet = { kind: "help" };
+  sheetShell("Keyboard shortcuts", "For a computer keyboard. You can turn them off in Settings.",
+    h("dl", { class: "keys" }, SHORTCUTS.flatMap(([keys, what]) => [h("dt", {}, keys.map((k) => h("kbd", {}, k))), h("dd", {}, what)])));
+}
+function cursorRows() { return [...document.querySelectorAll("#list li.item[data-id]")]; }
+function applyCursor(scroll) {
+  for (const r of document.querySelectorAll("#list li.item.cursor")) r.classList.remove("cursor");
+  const row = S.cursor && cursorRows().find((r) => r.dataset.id === S.cursor);
+  if (!row) return;
+  row.classList.add("cursor");
+  if (scroll) row.scrollIntoView({ block: "nearest" });
+}
+function moveCursor(n) {
+  const rows = cursorRows(); if (!rows.length) return;
+  let i = rows.findIndex((r) => r.dataset.id === S.cursor);
+  i = i < 0 ? (n > 0 ? 0 : rows.length - 1) : Math.min(rows.length - 1, Math.max(0, i + n));
+  const fold = rows[i].closest("details");
+  if (fold && !fold.open) fold.open = true;
+  S.cursor = rows[i].dataset.id; applyCursor(true);
+}
+// The card the cursor moves to when the current one leaves the list.
+function neighbour() {
+  const rows = cursorRows(), i = rows.findIndex((r) => r.dataset.id === S.cursor);
+  const next = i < 0 ? null : rows[i + 1] || rows[i - 1];
+  return next ? next.dataset.id : null;
+}
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") { if (S.sheet) closeSheet(); return; }
+  if (!pref("shortcuts") || S.sheet || e.metaKey || e.ctrlKey || e.altKey || e.isComposing) return;
+  const t = e.target;
+  if (t && t.closest && t.closest("input,textarea,select,[contenteditable]")) return;
+  if (e.key === "Enter" && t && t.closest && t.closest("button,a,summary")) return;
+  const k = e.key, today = localDay();
+  const cur = S.cursor && S.items.get(S.cursor);
+  const live = cur && isOpen(cur) ? cur : null;
+  const leave = (fn) => { const next = neighbour(); fn(); S.cursor = next; applyCursor(true); };
+  let used = true;
+  if (k === "j" || k === "k") moveCursor(k === "j" ? 1 : -1);
+  else if (k === "ArrowLeft" || k === "ArrowRight") setDay(addDays(S.day, k === "ArrowRight" ? 1 : -1));
+  else if (k === "t") setDay(today);
+  else if (k === "p" && S.day >= today) openPlan(S.day);
+  else if (k === ",") openSettings();
+  else if (k === "?") openHelp();
+  else if (live && (k === "o" || k === "Enter")) openSheet({ kind: "item", id: live.id });
+  else if (live && k === "e") leave(() => clearItem(live, { status: "done" }, "Done"));
+  else if (live && k === "h") leave(() => { const before = { snoozeUntil: live.snoozeUntil || null }; saveItem(live.id, { snoozeUntil: addDays(today, 1) }); toast("See it again tomorrow", () => saveItem(live.id, before)); });
+  else if (live && k === "#" && live.source === "email") leave(() => quickGmail(live, "delete"));
+  else if (live && k === "r" && live.source === "email") { openSheet({ kind: "item", id: live.id, focus: true }); S.sheet.panel = "draft"; renderSheet(); startDraft(live, false); }
+  else if (live && k === "b" && (live.tags || []).includes("work") && !live.blockEventId) { openSheet({ kind: "item", id: live.id, focus: true }); S.sheet.panel = "book"; renderSheet(); }
+  else used = false;
+  if (used) e.preventDefault();
+});
+
 // -------------------------------------------------------------------- boot
 $("refreshBtn").addEventListener("click", () => refreshAll());
-$("calsBtn").addEventListener("click", async () => { await calendarsToRead(); openCalendarsSheet(); });
+$("settingsBtn").addEventListener("click", () => openSettings());
+$("prevDay").addEventListener("click", () => setDay(addDays(S.day, -1)));
+$("nextDay").addEventListener("click", () => setDay(addDays(S.day, 1)));
+$("todayBtn").addEventListener("click", () => setDay(localDay()));
+$("planBtn").addEventListener("click", () => openPlan(S.day));
 render();
 
 (async () => {
@@ -1707,7 +2090,9 @@ render();
     S.driveAvailable = (lt.servers || []).some((sv) => sv.server === DRIVE);
   } catch (e) { S.fileArgs = false; S.driveAvailable = false; }
   render();
-  const stale = !S.profile.lastRefreshAt || Date.now() - S.profile.lastRefreshAt > AUTO_REFRESH_MS;
+  // Always refresh on the first visit; after that, as often as the viewer chose.
+  const every = Number(pref("autoRefreshHours"));
+  const stale = !S.profile.lastRefreshAt || (every > 0 && Date.now() - S.profile.lastRefreshAt > every * 3600000);
   if (stale) refreshAll();
   else { setStatus(""); loadCalendar(false); }
 })();

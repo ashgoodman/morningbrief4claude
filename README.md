@@ -5,9 +5,11 @@ calendar and every email still waiting on you, ranked by priority, with
 one-tap actions to deal with each one. It works with your own Gmail and
 Google Calendar through Claude's connectors.
 
-- **Today's schedule** from every calendar you choose, all-day events and
-  birthdays included, with Join Meet, and Accept / Maybe / Decline on
-  invitations.
+- **Your schedule, day by day**, from every calendar you choose, all-day
+  events and birthdays included, with Join Meet, and Accept / Maybe / Decline
+  on invitations. Step back and forward a day at a time.
+- **Plan my day**: lays your Work emails and call-backs into the day's free
+  time inside your working hours, for you to approve in one tap.
 - **Every email waiting on you**, split into unread and read-but-not-actioned,
   sorted by Claude into P1 today, P2 this week and P3 when there's time, with
   newsletters and likely spam folded away (one-tap Spam and Delete).
@@ -21,6 +23,11 @@ Google Calendar through Claude's connectors.
   with a nudge draft.
 - **Inbox zero**: switch from "last 24 hours" to the whole inbox, and have
   handled email archived in Gmail automatically.
+- **Start of the week**: on the first day of your week, what's been waiting
+  longest, in one place.
+- **Settings** for working hours, the day your week starts, calendars, text
+  size, auto-refresh, how long handled email stays listed, and sender rules;
+  **keyboard shortcuts** on a computer.
 
 Nothing is sent, and nothing is archived, deleted, filed or booked without a
 tap, except what your own sender rules say to do. Replies are drafts; you send
@@ -40,7 +47,7 @@ them from Gmail.
 
 In Claude, **Customize → Plugins**, then either:
 
-- **Upload** `dist/mb4c-plugin-0.2.1.zip`; or
+- **Upload** `dist/mb4c-plugin-0.3.0.zip`; or
 - **Add marketplace**, enter `ashgoodman/morningbrief4claude`, and install
   **Morning Brief for Claude** (needs this repository to be readable by the
   person installing it).
@@ -70,6 +77,7 @@ Built and checked:
 - The Day Sheet's script parses, and its attachment extraction (taking a
   file out of a raw Gmail message) is tested with nested MIME, base64 and
   quoted-printable parts.
+- Its free-time finder, day planner and start-of-week date are tested.
 - The Day Sheet is running on the author's own account against real Gmail
   and calendars.
 

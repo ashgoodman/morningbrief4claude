@@ -1,6 +1,6 @@
 ---
 name: dashboard
-description: Create (or update) the user's own MB4C Day Sheet - an interactive dashboard of today's calendar and every unanswered email, ranked by priority, with done, replied, delegated, remind-me, reschedule, draft-reply, archive, label, delete and save-attachment-to-Drive actions. Use when the user runs /mb4c:dashboard, asks for their day sheet or morning dashboard, or asks to install or update it.
+description: Create (or update) the user's own MB4C Day Sheet - an interactive dashboard of today's calendar and every unanswered email, ranked by priority, with done, replied, delegated, remind-me, reschedule, draft-reply, archive, label, delete and save-attachment-to-Drive actions, day-by-day navigation, a day planner, a start-of-week review and settings. Use when the user runs /mb4c:dashboard, asks for their day sheet or morning dashboard, or asks to install or update it.
 ---
 
 # Publish the Day Sheet
