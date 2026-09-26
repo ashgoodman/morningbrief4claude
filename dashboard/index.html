@@ -180,7 +180,7 @@ textarea{width:100%;min-height:160px;border:1px solid var(--line);border-radius:
 
   <main>
     <section class="schedule" id="schedSec" aria-labelledby="schedH">
-      <div class="sechead"><h2 id="schedH">Today's schedule</h2><span class="count" id="schedCount"></span></div>
+      <div class="sechead"><h2 id="schedH">Today's schedule</h2><span class="count" id="schedCount"></span><button class="chip" id="calsBtn" type="button">Calendars</button></div>
       <div id="schedule"><div class="note">Loading your calendar…</div></div>
       <div id="invites"></div>
     </section>
@@ -230,7 +230,7 @@ const S = {
   uid: null, me: null, db: null, mcp: null, sample: null, itemsRef: null, profileRef: null,
   items: new Map(), profile: {}, events: [], invites: [], eventsState: "loading", eventsErr: null,
   gmailErr: null, waErr: null, waAvailable: false, busy: false, filter: "all", view: "all",
-  labels: null, sheet: null,
+  labels: null, sheet: null, calendars: null,
 };
 const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 const $ = (id) => document.getElementById(id);
@@ -446,19 +446,69 @@ function evMeet(ev) {
 }
 function myResponse(ev) { const me = (ev.attendees || []).find((a) => a.self); return me ? me.responseStatus : null; }
 
+const EVENT_TYPES = ["DEFAULT", "OUT_OF_OFFICE", "FOCUS_TIME", "FROM_GMAIL", "BIRTHDAY"];
+async function calendarsToRead() {
+  if (!S.calendars) {
+    try {
+      const p = await call(CAL, "list_calendars", {}, { cache: { staleTime: 300000 } });
+      S.calendars = ((p && p.calendars) || []).map((c) => ({ id: c.id, summary: c.summary || c.id, primary: !!c.primary }));
+    } catch (e) { S.calendars = []; }
+  }
+  const hidden = new Set(S.profile.hiddenCalendars || []);
+  const list = S.calendars.filter((c) => !hidden.has(c.id));
+  return list.length || !S.calendars.length ? (list.length ? list : [{ id: "primary", summary: "Calendar", primary: true }]) : [];
+}
+
+function openCalendarsSheet() {
+  S.sheet = { kind: "calendars" };
+  const hidden = new Set(S.profile.hiddenCalendars || []);
+  const boxes = (S.calendars || []).map((c, i) => {
+    const box = h("input", { id: "cal" + i, type: "checkbox", checked: !hidden.has(c.id) });
+    box.addEventListener("change", () => {
+      const next = new Set(S.profile.hiddenCalendars || []);
+      if (box.checked) next.delete(c.id); else next.add(c.id);
+      saveProfile({ hiddenCalendars: [...next] });
+    });
+    return h("label", { class: "check", for: "cal" + i }, box, h("span", {}, c.summary));
+  });
+  const done = () => { closeSheet(); S.eventsState = "loading"; loadCalendar(true); };
+  $("sheetHost").replaceChildren(h("div", { class: "scrim", onclick: (e) => { if (e.target === e.currentTarget) done(); } },
+    h("div", { class: "sheet", role: "dialog", "aria-modal": "true", "aria-label": "Calendars to show" },
+      h("button", { class: "close", type: "button", "aria-label": "Close", onclick: done }, "×"),
+      h("h3", {}, "Calendars to show"),
+      h("div", { class: "meta" }, "Untick any you don't want on your day sheet."),
+      boxes.length ? boxes : h("div", { class: "note" }, "Couldn't list your calendars."),
+      h("div", { class: "row" }, h("button", { class: "btn primary", type: "button", onclick: done }, "Done")))));
+}
+
 async function loadCalendar(fresh) {
   const today = localDay();
   const opts = fresh ? { cache: { refresh: true } } : undefined;
-  try {
+  // Every calendar the viewer hasn't hidden, not just the primary one:
+  // birthdays and family events often live on their own calendars. The
+  // connector leaves Birthday events out unless they're asked for by type.
+  const cals = await calendarsToRead();
+  const results = await pool(cals, 4, async (c) => {
     const p = await call(CAL, "list_events", {
-      startTime: dayStart(today).toISOString(), endTime: dayStart(addDays(today, 1)).toISOString(),
-      orderBy: "startTime", pageSize: 100, timeZone: tz,
+      calendarId: c.id, startTime: dayStart(today).toISOString(), endTime: dayStart(addDays(today, 1)).toISOString(),
+      orderBy: "startTime", pageSize: 100, timeZone: tz, eventType: EVENT_TYPES,
     }, opts);
-    S.events = ((p && p.events) || []).filter((e) => e.status !== "cancelled")
-      .sort((a, b) => Number(!evAllDay(b)) - Number(!evAllDay(a)) || (evStart(a) || 0) - (evStart(b) || 0));
-    S.eventsState = "ok"; S.eventsErr = null;
-  } catch (e) {
-    S.eventsState = "error"; S.eventsErr = connectorMessage(CAL, e);
+    return ((p && p.events) || []).map((e) => ({ ...e, _cal: c.id, _calName: c.summary, _primary: !!c.primary }));
+  });
+  const ok = results.filter((r) => Array.isArray(r));
+  if (!ok.length && results.length) {
+    S.eventsState = "error"; S.eventsErr = connectorMessage(CAL, results[0] && results[0].__err);
+  } else {
+    const seen = new Set();
+    S.events = ok.flat().filter((e) => {
+      if (e.status === "cancelled") return false;
+      const key = (e.iCalUID || e.id) + "|" + JSON.stringify(e.start || {});
+      if (seen.has(key)) return false;
+      seen.add(key); return true;
+    }).sort((a, b) => Number(!evAllDay(b)) - Number(!evAllDay(a)) || (evStart(a) || 0) - (evStart(b) || 0));
+    S.eventsState = "ok";
+    const failed = cals.filter((c, i) => !Array.isArray(results[i])).map((c) => c.summary);
+    S.eventsErr = failed.length ? `Couldn't read ${failed.join(", ")}.` : null;
   }
   try {
     const p = await call(CAL, "list_events", {
@@ -490,7 +540,7 @@ function freeSlots(dayStr, minutes) {
 
 async function respond(ev, status) {
   try {
-    await call(CAL, "respond_to_event", { eventId: ev.id, responseStatus: status });
+    await call(CAL, "respond_to_event", { eventId: ev.id, responseStatus: status, ...(ev._cal && ev._cal !== "primary" ? { calendarId: ev._cal } : {}) });
     toast(status === "accepted" ? "Accepted" : status === "declined" ? "Declined" : "Marked as maybe");
     await S.mcp.invalidate(CAL).catch(() => {});
     loadCalendar(true);
@@ -821,6 +871,7 @@ function renderSchedule() {
   const host = $("schedule");
   if (S.eventsState === "loading") return;
   if (S.eventsState === "error") { host.replaceChildren(h("div", { class: "note bad" }, S.eventsErr)); $("schedCount").textContent = ""; return; }
+  const partial = S.eventsErr ? h("div", { class: "note bad", style: "margin-bottom:8px" }, S.eventsErr) : null;
   const now = new Date();
   const evs = S.events.filter((e) => {
     const st = S.items.get("ev-" + e.id);
@@ -828,8 +879,8 @@ function renderSchedule() {
     return !st || st.status !== "removed";
   });
   $("schedCount").textContent = evs.length ? `${evs.length} ${evs.length === 1 ? "event" : "events"}` : "";
-  if (!evs.length) { host.replaceChildren(h("div", { class: "note" }, "Nothing on your calendar today.")); return; }
-  host.replaceChildren(h("ol", { class: "timeline" }, evs.map((e) => {
+  if (!evs.length) { host.replaceChildren(...[partial, h("div", { class: "note" }, "Nothing on your calendar today.")].filter(Boolean)); return; }
+  host.replaceChildren(...[partial].filter(Boolean), h("ol", { class: "timeline" }, evs.map((e) => {
     const a = evStart(e), b = evEnd(e), all = evAllDay(e);
     const st = S.items.get("ev-" + e.id);
     const block = String(e.summary || "").startsWith(BLOCK_PREFIX);
@@ -841,7 +892,7 @@ function renderSchedule() {
       h("time", {}, all ? "All day" : fmtTime(a)),
       h("div", {},
         h("div", { class: "t" }, block ? String(e.summary).slice(BLOCK_PREFIX.length) : (e.summary || "(no title)")),
-        h("div", { class: "sub" }, [all ? null : `until ${fmtTime(b)}`, others ? `${others} guest${others === 1 ? "" : "s"}` : null, e.location || null].filter(Boolean).join(" · ")),
+        h("div", { class: "sub" }, [all ? null : `until ${fmtTime(b)}`, e.eventType === "BIRTHDAY" ? "Birthday" : null, others ? `${others} guest${others === 1 ? "" : "s"}` : null, e.location || null, e._calName && !e._primary && e._calName !== "Calendar" ? e._calName : null].filter(Boolean).join(" · ")),
         meet && (!b || b > now) ? h("a", { class: "join", href: appHref("meet", meet), target: "_blank", rel: "noopener" }, soon ? "Join now" : "Join Meet") : null,
         inviteButtons(e)),
       h("button", { class: "more", type: "button", "aria-label": "Actions for " + (e.summary || "event"), onclick: () => openSheet({ kind: "event", ev: e }) }, "⋯"));
@@ -1223,6 +1274,7 @@ async function moveEvent(ev, day, time) {
   }
   if (S.sheet) { S.sheet.working = true; renderSheet(); }
   try {
+    if (ev._cal && ev._cal !== "primary") input.calendarId = ev._cal;
     await call(CAL, "update_event", input);
     await S.mcp.invalidate(CAL).catch(() => {});
     closeSheet(); toast("Event moved to " + fmtDay(day)); loadCalendar(true);
@@ -1349,6 +1401,7 @@ function draftPanel(it) {
 
 // -------------------------------------------------------------------- boot
 $("refreshBtn").addEventListener("click", () => refreshAll());
+$("calsBtn").addEventListener("click", async () => { await calendarsToRead(); openCalendarsSheet(); });
 render();
 
 (async () => {
