@@ -12,15 +12,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Inbox tests
-        working-directory: inbox
-        run: npm test
-      - name: Relay end-to-end tests
-        working-directory: relay
-        run: npm test
-      - name: Inbox builds
-        working-directory: inbox
-        run: npx --yes wrangler@4 deploy --dry-run --outdir dist
-      - name: Relay builds
-        working-directory: relay
-        run: cp wrangler.toml.example wrangler.toml && npx --yes wrangler@4 deploy --dry-run --outdir dist
+      - name: Day sheet
+        run: node dashboard/test/dashboard.test.mjs

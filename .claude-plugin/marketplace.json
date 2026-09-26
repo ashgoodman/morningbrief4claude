@@ -3,12 +3,12 @@
   "owner": {
     "name": "Ashley Goodman"
   },
-  "description": "Morning Brief for Claude: a prioritised start to the day from Gmail, Google Calendar and WhatsApp Business.",
+  "description": "Morning Brief for Claude: a prioritised start to the day from Gmail and Google Calendar.",
   "plugins": [
     {
       "name": "mb4c",
       "source": "./plugin",
-      "description": "Each morning, triage unanswered email and WhatsApp messages by priority, flag call-backs and real work, and propose calendar blocks to get it done."
+      "description": "Each morning, triage unanswered email by priority, flag call-backs and real work, and propose calendar blocks to get it done."
     }
   ]
 }

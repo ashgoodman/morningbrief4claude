@@ -1,6 +1,6 @@
 ---
 name: setup
-description: Walk the user through setting up their morning brief - connecting Gmail and Google Calendar, optionally connecting WhatsApp Business, and scheduling the brief to run every morning. Use when the user runs /mb4c:setup, asks how to set up or schedule the morning brief, or when the brief reports a missing source.
+description: Walk the user through setting up their morning brief - connecting Gmail and Google Calendar and scheduling the brief to run every morning. Use when the user runs /mb4c:setup, asks how to set up or schedule the morning brief, or when the brief reports a missing source.
 ---
 
 # Set up the morning brief
@@ -15,7 +15,6 @@ Look at your available tools and tell the user which of these you can see:
 
 - Gmail (tools to search and read mail)
 - Google Calendar (tools to list and create events)
-- WhatsApp inbox (tools named `whatsapp_status`, `whatsapp_waiting`)
 
 Skip any step below whose source is already connected.
 
@@ -37,30 +36,7 @@ and run `/mb4c:setup` again.
 On a Team or Enterprise plan the organisation owner may need to enable these
 connectors first; if the user can't find them, say that.
 
-## Step 3: WhatsApp Business (optional)
-
-Ask whether they use the WhatsApp Business app for work and want those
-messages in the brief. If not, skip to Step 4.
-
-If yes, explain before they start:
-
-- It works with the **WhatsApp Business app** (version 2.24.17 or newer) and
-  the business keeps using the app on their phone as normal.
-- It needs a free Cloudflare account; they'll deploy their own small
-  "inbox" that stores their WhatsApp messages. Nobody else stores them.
-- One-to-one chats are included; **group chats are not** (Meta doesn't
-  provide them).
-- Only messages from the moment they connect, plus up to 180 days of history
-  if they approve history sharing in the app, are included.
-
-Then send them to the WhatsApp setup guide:
-https://github.com/ashgoodman/morningbrief4claude/blob/main/docs/WHATSAPP.md
-
-It ends with them adding a custom connector in Claude. When they come back,
-start a new chat, run `/mb4c:setup` again, and check you can see the
-`whatsapp_status` tool; call it and read the result back to them.
-
-## Step 4: Run it once now
+## Step 3: Run it once now
 
 Run the brief once so they can see it: follow the `/mb4c:brief` skill.
 Ask afterwards whether the priorities look right and note any preferences
@@ -68,7 +44,7 @@ they state (working hours, people who are always P1, senders who are always
 noise). Suggest they add those to **Settings → Profile → personal
 preferences** so every brief uses them.
 
-## Step 5: Schedule it every morning
+## Step 4: Schedule it every morning
 
 Explain that a scheduled task in Cowork runs in the cloud, so it runs even
 when their computer is asleep or Claude is closed. Tell them:
