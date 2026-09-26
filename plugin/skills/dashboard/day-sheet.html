@@ -367,10 +367,31 @@ async function labelThread(threadId, labelId) { return call(GMAIL, "label_thread
 async function spamThread(threadId) { return call(GMAIL, "mark_thread_spam", { threadId }); }
 async function trashThread(threadId) { return call(GMAIL, "trash_thread", { threadId }); }
 async function untrashThread(threadId) { return call(GMAIL, "untrash_thread", { threadId }); }
+async function unspamThread(threadId) { return call(GMAIL, "unmark_thread_spam", { threadId }); }
+
+// One-tap Spam and Delete on noise cards, each with Undo.
+async function quickGmail(it, what) {
+  try {
+    if (what === "spam") {
+      await spamThread(it.ref);
+      saveItem(it.id, { status: "spam" });
+      toast("Moved to Spam", async () => {
+        try { await unspamThread(it.ref); saveItem(it.id, { status: "open" }); } catch (e) { setStatus(connectorMessage(GMAIL, e), true); }
+      });
+    } else {
+      await trashThread(it.ref);
+      saveItem(it.id, { status: "deleted" });
+      toast("Moved to Trash", () => restoreItem({ ...it, status: "deleted" }));
+    }
+  } catch (e) { setStatus(connectorMessage(GMAIL, e), true); }
+}
 // Undo for a deleted email takes it back out of Gmail's Trash first.
 async function restoreItem(it) {
   if (it.status === "deleted" && it.source === "email") {
     try { await untrashThread(it.ref); } catch (e) { setStatus(connectorMessage(GMAIL, e), true); return; }
+  }
+  if (it.status === "spam" && it.source === "email") {
+    try { await unspamThread(it.ref); } catch (e) { setStatus(connectorMessage(GMAIL, e), true); return; }
   }
   saveItem(it.id, { status: "open", snoozeUntil: null, delegatedTo: null, followUpOn: null, autoClosed: false, note: null });
 }
@@ -1024,7 +1045,12 @@ function itemRow(it, handled) {
       it.source === "email" ? h("div", { class: "subj" }, it.subject) : null,
       it.gist ? h("div", { class: "gist" }, it.gist) : null,
       tags.length ? h("div", { class: "tags" }, tags) : null,
-      showCalls ? callButtons(it) : null),
+      showCalls ? callButtons(it) : null,
+      !handled && it.source === "email" && it.kind !== "awaiting" && effPrio(it) >= 4
+        ? h("div", { class: "callrow" },
+            h("button", { class: "callbtn", type: "button", onclick: (e) => { e.stopPropagation(); quickGmail(it, "spam"); } }, "Spam"),
+            h("button", { class: "callbtn", type: "button", onclick: (e) => { e.stopPropagation(); quickGmail(it, "delete"); } }, "Delete"))
+        : null),
     handled
       ? h("button", { class: "undo", type: "button", onclick: () => restoreItem(it) }, "Undo")
       : h("button", { class: "more", type: "button", "aria-label": "Actions for " + (it.who || "item"), onclick: () => openSheet({ kind: "item", id: it.id }) }, "⋯"));

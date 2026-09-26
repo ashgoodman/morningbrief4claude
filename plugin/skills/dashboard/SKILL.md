@@ -53,7 +53,7 @@ Publish `day-sheet.html` as an artifact with:
 {
   "mcp": {
     "servers": [
-      { "server": "Gmail", "tools": ["search_threads", "get_thread", "get_message", "create_draft", "list_labels", "create_label", "label_thread", "unlabel_thread", "mark_thread_spam", "trash_thread", "untrash_thread"] },
+      { "server": "Gmail", "tools": ["search_threads", "get_thread", "get_message", "create_draft", "list_labels", "create_label", "label_thread", "unlabel_thread", "mark_thread_spam", "unmark_thread_spam", "trash_thread", "untrash_thread"] },
       { "server": "Google Calendar", "tools": ["list_calendars", "list_events", "update_event", "create_event", "respond_to_event"] },
       { "server": "Google Drive", "tools": ["create_file"] }
     ]
