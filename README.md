@@ -49,7 +49,7 @@ them from Gmail.
 
 In Claude, **Customize → Plugins**, then either:
 
-- **Upload** `dist/mb4c-plugin-0.4.0.zip`; or
+- **Upload** `dist/mb4c-plugin-0.4.1.zip`; or
 - **Add marketplace**, enter `ashgoodman/morningbrief4claude`, and install
   **Morning Brief for Claude** (needs this repository to be readable by the
   person installing it).

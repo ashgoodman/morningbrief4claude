@@ -126,7 +126,7 @@ h2{font:600 1.1875rem/1.2 var(--display);margin:0}
 .ev.block .t::before{content:"Block";font:500 0.6875rem var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);border-radius:6px;padding:2px 6px;margin-right:6px;vertical-align:1px}
 .ev.now{background:var(--accent-soft)}
 .ev.past .t,.ev.past time{opacity:.55}
-.ev.doneev .t{text-decoration:line-through;opacity:.6}
+.donemark{display:inline-grid;place-items:center;width:1.25rem;height:1.25rem;border-radius:50%;background:var(--ok);color:var(--surface);font:700 0.75rem/1 var(--body);margin-right:6px;vertical-align:2px}
 .more{border:0;background:transparent;border-radius:8px;min-width:44px;min-height:44px;font-size:1.25rem;line-height:1;color:var(--muted)}
 .more:hover{background:var(--sunk)}
 
@@ -1161,7 +1161,8 @@ function renderSchedule() {
     return h("li", { class: cls },
       h("time", {}, all ? "All day" : fmtTime(a)),
       h("div", {},
-        h("div", { class: "t" }, block ? String(e.summary).slice(BLOCK_PREFIX.length) : (e.summary || "(no title)")),
+        h("div", { class: "t" }, st && st.status === "done" ? h("span", { class: "donemark", role: "img", "aria-label": "Done", title: "Done" }, "✓") : null,
+          block ? String(e.summary).slice(BLOCK_PREFIX.length) : (e.summary || "(no title)")),
         h("div", { class: "sub" }, [all ? null : `until ${fmtTime(b)}`, e.eventType === "BIRTHDAY" ? "Birthday" : null, others ? `${others} guest${others === 1 ? "" : "s"}` : null, e.location || null, e._calName && !e._primary && e._calName !== "Calendar" ? e._calName : null].filter(Boolean).join(" · ")),
         meet && (!b || b > now) ? h("a", { class: "join", href: appHref("meet", meet), target: "_blank", rel: "noopener" }, soon ? "Join now" : "Join Meet") : null,
         inviteButtons(e)),
@@ -1323,7 +1324,7 @@ function renderFolds(all) {
   const snoozed = all.filter(isSnoozed).sort((a, b) => a.snoozeUntil.localeCompare(b.snoozeUntil));
   const noise = all.filter((i) => isOpen(i) && effPrio(i) >= 4 && passes(i)).sort((a, b) => effPrio(b) - effPrio(a));
   const delegated = all.filter((i) => i.status === "delegated");
-  const handled = all.filter((i) => i.status !== "open" && i.status !== "delegated").sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0)).slice(0, 40);
+  const handled = all.filter((i) => i.status !== "open" && i.status !== "delegated" && !(i.source === "event" && i.status === "done")).sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0)).slice(0, 40);
   const fold = (title, items, rowFn) => items.length ? foldEl(title, `${title} (${items.length})`, h("ul", { class: "items" }, items.map(rowFn))) : null;
   $("folds").replaceChildren(...[
     fold("Reminders later", snoozed, (i) => withChip(itemRow(i), "Back " + fmtDay(i.snoozeUntil))),
@@ -1556,7 +1557,9 @@ function renderSheet() {
     const past = evEnd(ev) && evEnd(ev) < new Date();
     const block = String(ev.summary || "").startsWith(BLOCK_PREFIX);
     if (block && past) acts.push(act("Move to tomorrow", "Same time tomorrow", () => moveEvent(ev, addDays(localDay(evStart(ev)), 1), evStart(ev).toTimeString().slice(0, 5))));
-    acts.push(act("Done", "Clear it from today", () => set({ status: "done" }, "Marked done")));
+    // Done ticks an event off; it stays on the schedule with a check mark.
+    if (it && it.status === "done") acts.push(act("Not done", "Take the check mark off", () => { closeSheet(); saveItem(id, { status: "open" }); toast("Check mark removed", () => saveItem(id, { status: "done" })); }));
+    else acts.push(act("Done", "Tick it off; it stays on the schedule", () => set({ status: "done" }, "Marked done")));
     acts.push(act("Reschedule", "Move this event", () => panel("reschedule")));
     acts.push(act("Delegated", "Someone else has it", () => panel("delegate")));
     acts.push(act("Remove", "Hide it from the list", () => set({ status: "removed" }, "Removed")));

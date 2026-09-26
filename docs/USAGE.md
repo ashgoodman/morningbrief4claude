@@ -174,10 +174,12 @@ options open under the email and above the action buttons.
 
 ### Calendar events' ⋯ menu
 
-**Done**, **Reschedule** (moves the event in Google Calendar and keeps its
-length; warns you if guests will be notified or you're not the organiser),
-**Delegated**, **Remove** (hides it from today's schedule), plus **Open in
-Google Calendar** and **Join Google Meet**.
+- **Done** ticks it off: it stays on the schedule with a check mark.
+  **Not done** takes the check mark off.
+- **Reschedule** moves the event in Google Calendar and keeps its length;
+  it warns you if guests will be notified or you're not the organiser.
+- **Delegated**, and **Remove** (hides it from the schedule).
+- **Open in Google Calendar** and **Join Google Meet**.
 
 ### Swipes (touch screens)
 
