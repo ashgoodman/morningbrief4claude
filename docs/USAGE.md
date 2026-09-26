@@ -45,9 +45,13 @@ update it later, type `/mb4c:dashboard`.
   label above the date says where you are (Today, Tomorrow, In 3 days…), and
   **Back to today** appears when you've moved away. Moving between days
   changes the schedule; your email list is always your inbox as it is now.
-- **Settings** and **Refresh.** The page refreshes by itself when you open it
-  if the last refresh is older than you chose in Settings (two hours to
-  begin with). **Refresh** does it now.
+- **Settings** (the gear) and **Refresh** (the circular arrow). The page
+  refreshes by itself when you open it if the last refresh is older than you
+  chose in Settings (two hours to begin with). **Refresh** does it now.
+- **Email from: Last 24 hours | Whole inbox**, under the two buttons. Last 24
+  hours brings in new email from the past day; anything already on your list
+  stays until you deal with it. Whole inbox sorts everything in your inbox
+  (up to 150 threads per refresh).
 - **Summary chips**, which are also filters. Tap one to see only those items,
   tap it again (or **All**) to see everything:
   - **for today**: P1 items
@@ -79,8 +83,10 @@ that day's free time:
   30 minutes and 2 hours. Call-backs share one block: 15 minutes plus 5 per
   call.
 - Highest priority goes first, each in the earliest gap it fits.
-- It only uses your working hours (set in Settings), keeps 10 minutes clear
-  of other events, and never suggests time that has already passed.
+- It only uses your working days and hours (set in Settings), keeps 10
+  minutes clear of other events, and never suggests time that has already
+  passed. On a day you don't work, it asks first: **Plan it anyway**, or plan
+  your next working day instead.
 - Untick any you don't want, then **Add to your calendar**. Anything that
   doesn't fit is listed so you can plan it on the next day. Emails that
   already have a block from today on are left out.
@@ -121,7 +127,7 @@ Buttons you can tap straight from the card:
 | Button | What it does |
 |---|---|
 | **Draft a quick reply →** / **Draft a reply →** | Opens the item with Claude already writing a reply. Edit it, then **Save to Gmail Drafts**. Nothing is sent; you send it from Gmail. |
-| **Book time →** | Opens the item with the booking fields ready and the first free gap filled in, from that day's calendar and your working hours. Change the day and it finds a gap on that day. **Add to calendar** books an "MB4C: …" block. |
+| **Book time →** | Opens the item with the booking fields ready: your next working day, and the first free gap in your working hours from that day's calendar. Change the day and it finds a gap on that day. **Add to calendar** books an "MB4C: …" block. |
 | **Call +63…** | Starts a phone call on a phone. |
 | **WhatsApp** | Opens a WhatsApp chat with that number. Shown only when the email says the number is on WhatsApp. |
 | **Copy** | Copies the number. |
@@ -208,18 +214,17 @@ Everything you can change lives here. It's saved as you change it, and the
 same on every device you open the Day Sheet on.
 
 - **Email**
-  - **Email from: Last 24 hours | Whole inbox.** Last 24 hours brings in new
-    email from the past day; anything already on your list stays until you
-    deal with it. Whole inbox sorts everything in your inbox (up to 150
-    threads per refresh).
   - **Archive in Gmail when handled.** Marking an email Done, Replied or
     Delegated also archives it in Gmail.
   - **Keep handled emails listed for** 7, 14 or 30 days.
   - **Refresh by itself when opened**, if the last refresh is older than 1,
     2, 4 or 8 hours, or never.
+- **Working days and hours**
+  - **Working days:** tick the days you work (Monday to Friday to begin
+    with).
+  - **Working day starts / ends** (9:00 to 18:00 to begin with). Book time
+    and Plan my day only suggest times in between, on your working days.
 - **Calendar**
-  - **Working day starts / ends.** Book time and Plan my day only suggest
-    times in between.
   - **Calendar reminders go at.** The time of day for Remind me's calendar
     reminder.
   - **Calendars to show.** Untick any you don't want on the Day Sheet.
@@ -227,6 +232,13 @@ same on every device you open the Day Sheet on.
   - **My week starts on** any day of the week.
   - **Show the start-of-week reset**, and **Show this week's reset again**
     after you've marked it done.
+- **Appearance**
+  - **Light or dark: Match system | Light | Dark.**
+  - **Colour theme:** MB4C's own colours, or one of five open-source code
+    editor themes: Solarized, Nord, Gruvbox, Catppuccin or Dracula, each in
+    its light and dark version. They use each theme's published colours
+    (all five are MIT licensed); a few colours are darkened or lightened so
+    text keeps a contrast of at least 4.5:1.
 - **Display**
   - **Text size: Small | Medium | Large.** Changes the size of all the text
     on the page.

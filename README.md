@@ -25,9 +25,11 @@ Google Calendar through Claude's connectors.
   handled email archived in Gmail automatically.
 - **Start of the week**: on the first day of your week, what's been waiting
   longest, in one place.
-- **Settings** for working hours, the day your week starts, calendars, text
-  size, auto-refresh, how long handled email stays listed, and sender rules;
-  **keyboard shortcuts** on a computer.
+- **Settings** for working days and hours, the day your week starts,
+  calendars, light or dark, colour themes (MB4C's own, or Solarized, Nord,
+  Gruvbox, Catppuccin or Dracula), text size, auto-refresh, how long handled
+  email stays listed, and sender rules; **keyboard shortcuts** on a
+  computer.
 
 Nothing is sent, and nothing is archived, deleted, filed or booked without a
 tap, except what your own sender rules say to do. Replies are drafts; you send
@@ -47,7 +49,7 @@ them from Gmail.
 
 In Claude, **Customize → Plugins**, then either:
 
-- **Upload** `dist/mb4c-plugin-0.3.0.zip`; or
+- **Upload** `dist/mb4c-plugin-0.4.0.zip`; or
 - **Add marketplace**, enter `ashgoodman/morningbrief4claude`, and install
   **Morning Brief for Claude** (needs this repository to be readable by the
   person installing it).
@@ -118,3 +120,10 @@ scripts/build-zip.sh                     # writes dist/mb4c-plugin-<version>.zip
 
 After changing `day-sheet.html`, rebuild the zip, and re-run `/mb4c:dashboard`
 to update your own Day Sheet.
+
+## Credits
+
+The optional colour themes use colours from Solarized (Ethan Schoonover),
+Nord (Sven Greb), Gruvbox (morhetz), Catppuccin, and Dracula and Alucard
+(Dracula Theme), all MIT licensed. Their licence notices are in
+[plugin/THIRD_PARTY_NOTICES.md](plugin/THIRD_PARTY_NOTICES.md).

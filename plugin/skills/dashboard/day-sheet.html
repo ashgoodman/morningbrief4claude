@@ -27,6 +27,36 @@
   --p1:#F0806B; --p1-soft:#3A1F1A; --p2:#E2AE55; --p2-soft:#342914; --p3:#A3B1BC; --p3-soft:#222B31;
   --noise:#7F8A86; --spam:#C79BDB; --spam-soft:#2E2135; --ok:#5BC98A; --shadow:0 12px 40px rgba(0,0,0,.5);
 }
+/* Appearance chosen on the page (Settings): data-scheme is the resolved
+   light or dark, data-palette the colour theme. They win over the viewer's
+   system setting, which applies until the page's script runs. */
+:root[data-scheme="light"]{color-scheme:light;
+  --ground:#F4F6F5; --surface:#FFFFFF; --sunk:#EAEEEC; --ink:#15201C; --muted:#5B6863; --line:#D9E0DD;
+  --accent:#0F6B5C; --accent-ink:#FFFFFF; --accent-soft:#DDEFEA;
+  --p1:#B83A26; --p1-soft:#F8E4DF; --p2:#8A5A10; --p2-soft:#F6ECD9; --p3:#4E5D69; --p3-soft:#E6EBEF;
+  --noise:#7A847F; --spam:#7D4A92; --spam-soft:#EFE4F4; --ok:#1E7A45;
+  --shadow:0 12px 40px rgba(12,30,24,.18);
+}
+:root[data-scheme="dark"]{color-scheme:dark;
+  --ground:#0F1513; --surface:#161E1B; --sunk:#1D2723; --ink:#E6ECE9; --muted:#98A5A0; --line:#28332F;
+  --accent:#4FBFA6; --accent-ink:#06201A; --accent-soft:#16332C;
+  --p1:#F0806B; --p1-soft:#3A1F1A; --p2:#E2AE55; --p2-soft:#342914; --p3:#A3B1BC; --p3-soft:#222B31;
+  --noise:#7F8A86; --spam:#C79BDB; --spam-soft:#2E2135; --ok:#5BC98A; --shadow:0 12px 40px rgba(0,0,0,.5);
+}
+/* Colour themes from open-source editor themes (all MIT licensed): Solarized
+   (Ethan Schoonover), Nord (Sven Greb), Gruvbox (morhetz), Catppuccin Latte
+   and Mocha, Dracula and Alucard. Colours come from each theme's published
+   palette; a few are darkened or lightened so text meets 4.5:1 contrast. */
+:root[data-palette="solarized"][data-scheme="light"]{color-scheme:light; --ground:#EEE8D5; --surface:#FDF6E3; --sunk:#EEE8D5; --ink:#073642; --muted:#566B72; --line:#DDD6C1; --accent:#1D699E; --accent-ink:#FFFFFF; --accent-soft:#DFE7E1; --p1:#BD2320; --p1-soft:#F8DBCA; --p2:#826200; --p2-soft:#F3E7C3; --p3:#565CBB; --p3-soft:#E9E3DF; --noise:#586B72; --spam:#B4276B; --spam-soft:#F7DBD5; --ok:#5D6B00; --shadow:0 12px 40px rgba(0,0,0,.16)}
+:root[data-palette="solarized"][data-scheme="dark"]{color-scheme:dark; --ground:#002B36; --surface:#073642; --sunk:#0A4050; --ink:#EEE8D5; --muted:#93A1A1; --line:#1B4B57; --accent:#6BB2E4; --accent-ink:#000000; --accent-soft:#0C4459; --p1:#E87B79; --p1-soft:#29353F; --p2:#D4A000; --p2-soft:#234337; --p3:#9FA2D8; --p3-soft:#173F57; --noise:#99A7A9; --spam:#E37DAE; --spam-soft:#28364C; --ok:#8EA300; --shadow:0 12px 40px rgba(0,0,0,.5)}
+:root[data-palette="nord"][data-scheme="light"]{color-scheme:light; --ground:#E5E9F0; --surface:#ECEFF4; --sunk:#D8DEE9; --ink:#2E3440; --muted:#4C566A; --line:#D8DEE9; --accent:#466387; --accent-ink:#FFFFFF; --accent-soft:#D8E0EA; --p1:#A1414B; --p1-soft:#E6DBE1; --p2:#9C4D33; --p2-soft:#E8E0E2; --p3:#446689; --p3-soft:#DDE4ED; --noise:#4C566A; --spam:#815679; --spam-soft:#E4E1EA; --ok:#546E3E; --shadow:0 12px 40px rgba(0,0,0,.16)}
+:root[data-palette="nord"][data-scheme="dark"]{color-scheme:dark; --ground:#2E3440; --surface:#3B4252; --sunk:#434C5E; --ink:#ECEFF4; --muted:#D8DEE9; --line:#4C566A; --accent:#A9D1DD; --accent-ink:#000000; --accent-soft:#475666; --p1:#DEADB2; --p1-soft:#504756; --p2:#EBCB8B; --p2-soft:#57585B; --p3:#B1C5D9; --p3-soft:#465164; --noise:#D8DEE9; --spam:#D3BCCE; --spam-soft:#4E4E61; --ok:#A3BE8C; --shadow:0 12px 40px rgba(0,0,0,.5)}
+:root[data-palette="gruvbox"][data-scheme="light"]{color-scheme:light; --ground:#F2E5BC; --surface:#F9F5D7; --sunk:#EBDBB2; --ink:#3C3836; --muted:#6E6259; --line:#D5C4A1; --accent:#3B6E4F; --accent-ink:#FFFFFF; --accent-soft:#DFE4C5; --p1:#9D0006; --p1-soft:#ECD3BA; --p2:#8C5B0F; --p2-soft:#EFE3BC; --p3:#076678; --p3-soft:#D7E1CA; --noise:#6B5F54; --spam:#8F3F71; --spam-soft:#EADCC9; --ok:#6B670C; --shadow:0 12px 40px rgba(0,0,0,.16)}
+:root[data-palette="gruvbox"][data-scheme="dark"]{color-scheme:dark; --ground:#282828; --surface:#32302F; --sunk:#3C3836; --ink:#EBDBB2; --muted:#A89984; --line:#504945; --accent:#8EC07C; --accent-ink:#000000; --accent-soft:#41473B; --p1:#FC8375; --p1-soft:#523430; --p2:#FABD2F; --p2-soft:#52472F; --p3:#98B4A9; --p3-soft:#3F4340; --noise:#ADA296; --spam:#DB9CAE; --spam-soft:#4C3E40; --ok:#B8BB26; --shadow:0 12px 40px rgba(0,0,0,.5)}
+:root[data-palette="catppuccin"][data-scheme="light"]{color-scheme:light; --ground:#E6E9EF; --surface:#EFF1F5; --sunk:#DCE0E8; --ink:#4C4F69; --muted:#65687D; --line:#CCD0DA; --accent:#0A54E5; --accent-ink:#FFFFFF; --accent-soft:#D2DEF5; --p1:#BA0D33; --p1-soft:#EBD1DB; --p2:#AC4001; --p2-soft:#F1DDD4; --p3:#116C71; --p3-soft:#D1E4E8; --noise:#5D6275; --spam:#7D26ED; --spam-soft:#E1D7F4; --ok:#307820; --shadow:0 12px 40px rgba(0,0,0,.16)}
+:root[data-palette="catppuccin"][data-scheme="dark"]{color-scheme:dark; --ground:#181825; --surface:#1E1E2E; --sunk:#313244; --ink:#CDD6F4; --muted:#A6ADC8; --line:#313244; --accent:#89B4FA; --accent-ink:#000000; --accent-soft:#2F364F; --p1:#F38BA8; --p1-soft:#402F42; --p2:#FAB387; --p2-soft:#41363C; --p3:#74C7EC; --p3-soft:#2C394C; --noise:#989BAC; --spam:#CBA6F7; --spam-soft:#3A344E; --ok:#A6E3A1; --shadow:0 12px 40px rgba(0,0,0,.5)}
+:root[data-palette="dracula"][data-scheme="light"]{color-scheme:light; --ground:#ECE9DF; --surface:#FFFBEB; --sunk:#DEDCCF; --ink:#1F1F1F; --muted:#6C664B; --line:#CECCC0; --accent:#644AC9; --accent-ink:#FFFFFF; --accent-soft:#E9E2E6; --p1:#BA3527; --p1-soft:#F8E0D0; --p2:#A34D14; --p2-soft:#F2E3CD; --p3:#036A96; --p3-soft:#DCE7DF; --noise:#666047; --spam:#A3144D; --spam-soft:#F2DBD5; --ok:#14710A; --shadow:0 12px 40px rgba(0,0,0,.16)}
+:root[data-palette="dracula"][data-scheme="dark"]{color-scheme:dark; --ground:#21222C; --surface:#282A36; --sunk:#343746; --ink:#F8F8F2; --muted:#8692B9; --line:#44475A; --accent:#C098F9; --accent-ink:#000000; --accent-soft:#403B55; --p1:#FF7979; --p1-soft:#4A313B; --p2:#FFB86C; --p2-soft:#4A413F; --p3:#8BE9FD; --p3-soft:#384956; --noise:#96A0C2; --spam:#FF79C6; --spam-soft:#4A374D; --ok:#50FA7B; --shadow:0 12px 40px rgba(0,0,0,.5)}
 *{box-sizing:border-box}
 /* text size: every font size is in rem, so this one setting scales the page */
 html{font-size:100%}
@@ -57,8 +87,16 @@ h1{font:700 1.5rem/1.1 var(--display);margin:4px 0 0;text-wrap:balance;letter-sp
 .stat[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
 .stat[aria-pressed="true"] b{color:inherit}
 .stat[disabled]{opacity:.5;cursor:default}
-.refresh{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:4px;margin-left:auto}
+.refresh{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:6px;margin-left:auto}
 .topbtns{display:flex;gap:6px}
+.iconbtn{display:grid;place-items:center;width:44px;height:44px;padding:0;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.iconbtn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.iconbtn:hover{border-color:var(--accent)}
+.iconbtn[disabled]{opacity:.6;cursor:default}
+.iconbtn svg{width:20px;height:20px}
+.iconbtn.spin svg{animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.scope{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:6px 8px;font-size:0.8125rem;color:var(--muted)}
 .btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:9px 14px;min-height:44px;font-weight:600}
 .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 .btn.danger{color:var(--p1)}
@@ -199,6 +237,17 @@ kbd{display:inline-block;min-width:1.75rem;text-align:center;font:500 0.75rem/1.
 .reset .items{gap:6px}
 </style>
 
+<script>
+(function () {
+  try {
+    var d = document.documentElement, pal = localStorage.getItem("mb4c.palette"), mode = localStorage.getItem("mb4c.mode");
+    if (pal && pal !== "default") d.dataset.palette = pal;
+    var host = d.getAttribute("data-theme");
+    var dark = mode === "dark" || (mode !== "light" && (host ? host === "dark" : matchMedia("(prefers-color-scheme: dark)").matches));
+    d.dataset.scheme = dark ? "dark" : "light";
+  } catch (e) { /* storage blocked: the system setting applies */ }
+})();
+</script>
 <div class="wrap">
   <header class="top">
     <div class="toprow">
@@ -210,9 +259,10 @@ kbd{display:inline-block;min-width:1.75rem;text-align:center;font:500 0.75rem/1.
       </div>
       <div class="refresh">
         <div class="topbtns">
-          <button class="btn" id="settingsBtn" type="button">Settings</button>
-          <button class="btn primary" id="refreshBtn" type="button">Refresh</button>
+          <button class="iconbtn" id="settingsBtn" type="button" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+          <button class="iconbtn primary" id="refreshBtn" type="button" aria-label="Refresh" title="Refresh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg></button>
         </div>
+        <div class="scope" id="scope"></div>
         <span class="fresh" id="fresh"></span>
       </div>
     </div>
@@ -273,7 +323,10 @@ const TEXT_KEY = "mb4c.textSize";
 const DEFAULTS = {
   scope: "day", autoArchive: false, textSize: "medium", workStart: "09:00", workEnd: "18:00",
   weekStart: 1, weekReset: true, shortcuts: true, autoRefreshHours: 2, keepDays: 14, remindAt: "09:00",
+  workDays: [1, 2, 3, 4, 5], mode: "system", palette: "default",
 };
+// Colour themes: [id, name, credit, swatches per scheme]. The CSS holds the full sets.
+const THEMES = [["default", "MB4C", "The Day Sheet's own colours", {"light": ["#FFFFFF", "#0F6B5C", "#B83A26", "#8A5A10", "#4E5D69"], "dark": ["#161E1B", "#4FBFA6", "#F0806B", "#E2AE55", "#A3B1BC"]}], ["solarized", "Solarized", "Ethan Schoonover", {"light": ["#FDF6E3", "#1D699E", "#BD2320", "#826200", "#565CBB"], "dark": ["#073642", "#6BB2E4", "#E87B79", "#D4A000", "#9FA2D8"]}], ["nord", "Nord", "Sven Greb", {"light": ["#ECEFF4", "#466387", "#A1414B", "#9C4D33", "#446689"], "dark": ["#3B4252", "#A9D1DD", "#DEADB2", "#EBCB8B", "#B1C5D9"]}], ["gruvbox", "Gruvbox", "morhetz", {"light": ["#F9F5D7", "#3B6E4F", "#9D0006", "#8C5B0F", "#076678"], "dark": ["#32302F", "#8EC07C", "#FC8375", "#FABD2F", "#98B4A9"]}], ["catppuccin", "Catppuccin", "Catppuccin (Latte and Mocha)", {"light": ["#EFF1F5", "#0A54E5", "#BA0D33", "#AC4001", "#116C71"], "dark": ["#1E1E2E", "#89B4FA", "#F38BA8", "#FAB387", "#74C7EC"]}], ["dracula", "Dracula", "Dracula Theme (Dracula and Alucard)", {"light": ["#FFFBEB", "#644AC9", "#BA3527", "#A34D14", "#036A96"], "dark": ["#282A36", "#C098F9", "#FF7979", "#FFB86C", "#8BE9FD"]}]];
 const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 // Text size is saved in the profile; this device also keeps a copy so the
@@ -295,6 +348,21 @@ const S = {
   day: null, dayCache: new Map(), calPromise: null, cursor: null,
 };
 const pref = (k) => (S.profile[k] === undefined || S.profile[k] === null ? DEFAULTS[k] : S.profile[k]);
+
+// Light, dark or the system's choice, and a colour theme. Saved in the
+// profile; this device keeps a copy so the page opens in the right colours.
+const darkQuery = window.matchMedia ? matchMedia("(prefers-color-scheme: dark)") : null;
+function applyTheme() {
+  const d = document.documentElement, mode = pref("mode"), pal = pref("palette");
+  const host = d.getAttribute("data-theme");
+  const dark = mode === "dark" || (mode !== "light" && (host ? host === "dark" : !!(darkQuery && darkQuery.matches)));
+  d.dataset.scheme = dark ? "dark" : "light";
+  if (pal && pal !== "default" && THEMES.some((t) => t[0] === pal)) d.dataset.palette = pal; else delete d.dataset.palette;
+  try { localStorage.setItem("mb4c.mode", mode); localStorage.setItem("mb4c.palette", pal); } catch (e) { /* storage blocked */ }
+}
+if (darkQuery && darkQuery.addEventListener) darkQuery.addEventListener("change", applyTheme);
+new MutationObserver(applyTheme).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+const isWorkDay = (dayStr) => (pref("workDays") || []).includes(dayStart(dayStr).getDay());
 const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 const $ = (id) => document.getElementById(id);
 
@@ -954,7 +1022,7 @@ async function triage(entries) {
 // ---------------------------------------------------------------- refresh
 async function refreshAll() {
   if (S.busy) return;
-  S.busy = true; $("refreshBtn").disabled = true;
+  S.busy = true; $("refreshBtn").disabled = true; $("refreshBtn").classList.add("spin");
   setStatus(S.profile.scope === "inbox" ? "Checking your whole inbox and today's calendar…" : "Checking today's calendar and new email…");
   const toTriage = [];
   S.dayCache.clear();
@@ -968,7 +1036,7 @@ async function refreshAll() {
   wakeFollowUps();
   pruneHandled();
   await saveProfile({ lastRefreshAt: Date.now() });
-  S.busy = false; $("refreshBtn").disabled = false;
+  S.busy = false; $("refreshBtn").disabled = false; $("refreshBtn").classList.remove("spin");
   const problems = [S.gmailErr, S.eventsErr].filter(Boolean);
   setStatus(problems.length ? problems.join(" ") : (toTriage.length ? `${toTriage.length} new or updated.` : "Up to date."), problems.length > 0);
   render();
@@ -1037,6 +1105,10 @@ function render() {
   document.querySelector("main").classList.toggle("single", !(showSched && showNeed));
   $("swipehint").hidden = !TOUCH;
   $("keyhint").hidden = PLATFORM !== "desktop" || !pref("shortcuts");
+  const scope = pref("scope") === "inbox" ? "inbox" : "day";
+  $("scope").replaceChildren(h("span", {}, "Email from"), h("div", { class: "seg", role: "group", "aria-label": "Which email to sort" },
+    h("button", { type: "button", "aria-pressed": String(scope === "day"), onclick: () => setScope("day") }, "Last 24 hours"),
+    h("button", { type: "button", "aria-pressed": String(scope === "inbox"), onclick: () => setScope("inbox") }, "Whole inbox")));
   renderSchedule();
   renderDueBack(all);
   renderInvites();
@@ -1736,7 +1808,8 @@ function eventReschedulePanel(ev) {
 
 function bookPanel(it) {
   const mins = it.estimateMin || 30;
-  const start = S.day > localDay() ? S.day : localDay();
+  let start = S.day > localDay() ? S.day : localDay();
+  for (let i = 0; i < 7 && !isWorkDay(start); i++) start = addDays(start, 1);   // next working day
   const d = h("input", { id: "bookDay", type: "date", min: localDay(), value: start });
   const len = h("select", { id: "bookLen" }, [15, 30, 45, 60, 90, 120].map((m) => h("option", { value: String(m), selected: m === mins }, `${m} min`)));
   const t = h("input", { id: "bookTime", type: "time", step: "900" });
@@ -1750,7 +1823,8 @@ function bookPanel(it) {
     try { evs = await eventsFor(day); } catch (e) { if (d.value === day) hint.textContent = "Couldn't read that day's calendar. Pick a start time yourself."; return; }
     if (d.value !== day || Number(len.value) !== m) return;   // changed while loading
     const slots = freeSlots(day, m, evs);
-    if (slots.length) { t.value = slots[0].toTimeString().slice(0, 5); hint.textContent = `First free ${m} minutes ${onDay(day)} in your working hours.`; }
+    const off = isWorkDay(day) ? "" : ` ${WEEKDAYS[dayStart(day).getDay()]} isn't one of your working days.`;
+    if (slots.length) { t.value = slots[0].toTimeString().slice(0, 5); hint.textContent = `First free ${m} minutes ${onDay(day)} in your working hours.${off}`; }
     else { t.value = ""; hint.textContent = `No free gap that long ${day === localDay() ? "left today" : onDay(day)} in your working hours (${fmtHM(pref("workStart"))}–${fmtHM(pref("workEnd"))}).`; }
   };
   suggest();
@@ -1902,15 +1976,25 @@ async function openSettings() {
 
   sheetShell("Settings", "Saved as you change them, and the same on every device you open this on.", h("div", {},
     group("Email", null,
-      seg("Email from", [["day", "Last 24 hours"], ["inbox", "Whole inbox"]], pref("scope"), (k) => setScope(k)),
-      h("p", { class: "sethint" }, `Whole inbox sorts up to ${INBOX_CAP} threads each refresh. Anything already on your list stays until you deal with it either way.`),
       check("setArchive", pref("autoArchive"), "Archive in Gmail when I mark an email Done, Replied or Delegated", (on) => saved({ autoArchive: on }, on ? "Handled emails will be archived in Gmail" : "Handled emails stay in your Gmail inbox")),
       h("div", { class: "row" },
         select("setKeep", "Keep handled emails listed for", [[7, "7 days"], [14, "14 days"], [30, "30 days"]], pref("keepDays"), (v) => saved({ keepDays: Number(v) })),
         select("setAuto", "Refresh by itself when opened, if the last refresh is older than", [[1, "1 hour"], [2, "2 hours"], [4, "4 hours"], [8, "8 hours"], [0, "Never (I'll tap Refresh)"]], pref("autoRefreshHours"), (v) => saved({ autoRefreshHours: Number(v) })))),
-    group("Calendar", "Book time and Plan my day only suggest times inside your working hours.",
+    group("Working days and hours", "Book time and Plan my day only suggest times on your working days, inside your working hours.",
+      h("div", { class: "row", role: "group", "aria-label": "Working days" }, [1, 2, 3, 4, 5, 6, 0].map((d) => {
+        const box = h("input", { id: "setDay" + d, type: "checkbox", checked: (pref("workDays") || []).includes(d) });
+        box.addEventListener("change", () => {
+          const days = new Set(pref("workDays") || []);
+          if (box.checked) days.add(d); else days.delete(d);
+          if (!days.size) { box.checked = true; hoursMsg.textContent = "Keep at least one working day."; return; }
+          hoursMsg.textContent = "";
+          saved({ workDays: [...days].sort() }, "Working days saved");
+        });
+        return h("label", { class: "check", for: "setDay" + d, style: "padding:8px 10px" }, box, h("span", {}, WEEKDAYS[d].slice(0, 3)));
+      })),
       h("div", { class: "row" }, time("setWorkStart", "Working day starts", hours.start, setHours("start")), time("setWorkEnd", "Working day ends", hours.end, setHours("end"))),
-      hoursMsg,
+      hoursMsg),
+    group("Calendar", null,
       h("div", { class: "row" }, time("setRemindAt", "Calendar reminders go at", pref("remindAt"), (inp) => { if (inp.value) saved({ remindAt: inp.value }, "Reminder time saved"); })),
       h("h4", { class: "subhead", style: "margin:6px 0 0" }, "Calendars to show"),
       cals.length ? cals : h("div", { class: "note" }, "Couldn't list your calendars.")),
@@ -1918,6 +2002,17 @@ async function openSettings() {
       select("setWeekStart", "My week starts on", [1, 2, 3, 4, 5, 6, 0].map((d) => [d, WEEKDAYS[d]]), pref("weekStart"), (v) => saved({ weekStart: Number(v) }, `Your week starts on ${WEEKDAYS[Number(v)]}`)),
       check("setReset", pref("weekReset"), "Show the start-of-week reset", (on) => saved({ weekReset: on })),
       h("div", { class: "row" }, showAgain)),
+    group("Appearance", null,
+      seg("Light or dark", [["system", "Match system"], ["light", "Light"], ["dark", "Dark"]], pref("mode"), (k) => { saveProfile({ mode: k }); applyTheme(); }),
+      h("div", { role: "radiogroup", "aria-label": "Colour theme", style: "display:grid;gap:8px" }, THEMES.map(([id, name, by, sw]) => {
+        const radio = h("input", { id: "pal-" + id, type: "radio", name: "palette", checked: pref("palette") === id });
+        radio.addEventListener("change", () => { if (radio.checked) { saveProfile({ palette: id }); applyTheme(); } });
+        const dots = (document.documentElement.dataset.scheme === "dark" ? sw.dark : sw.light);
+        return h("label", { class: "check", for: "pal-" + id, style: "align-items:center" }, radio,
+          h("span", { style: "display:flex;gap:3px", "aria-hidden": "true" }, dots.map((c) => h("span", { style: `width:14px;height:14px;border-radius:50%;background:${c};border:1px solid var(--line)` }))),
+          h("span", {}, h("b", {}, name), h("span", { class: "sub", style: "display:block;font-size:.8125rem;color:var(--muted)" }, by)));
+      })),
+      h("p", { class: "sethint" }, "The editor themes use each theme's published colours, with a few darkened or lightened so text stays easy to read.")),
     group("Display", null,
       seg("Text size", Object.entries(TEXT_SIZES), TEXT_SIZES[S.profile.textSize] ? S.profile.textSize : document.documentElement.dataset.text, (k) => setTextSize(k)),
       check("setKeys", pref("shortcuts"), "Keyboard shortcuts on a computer", (on) => saved({ shortcuts: on })),
@@ -1926,9 +2021,17 @@ async function openSettings() {
 }
 
 // ------------------------------------------------------------ plan the day
-async function openPlan(day) {
+async function openPlan(day, anyway) {
   const sh = S.sheet = { kind: "plan", day };
   const title = day === localDay() ? "Plan my day" : "Plan " + fmtDay(day);
+  if (!isWorkDay(day) && !anyway) {
+    let next = addDays(day, 1);
+    for (let i = 0; i < 7 && !isWorkDay(next); i++) next = addDays(next, 1);
+    sheetShell(title, `${WEEKDAYS[dayStart(day).getDay()]} isn't one of your working days. Change your working days in Settings.`, h("div", { class: "row" },
+      h("button", { class: "btn primary", type: "button", onclick: () => openPlan(day, true) }, "Plan it anyway"),
+      h("button", { class: "btn", type: "button", onclick: () => { closeSheet(); setDay(next); openPlan(next); } }, "Plan " + fmtDay(next) + " instead")));
+    return;
+  }
   sheetShell(title, "Looking for free time…", null);
   let evs;
   try { evs = await eventsFor(day); } catch (e) {
@@ -2067,6 +2170,7 @@ render();
     S.itemsRef = S.profileRef.collection("items");
     try { const p = await S.profileRef.get(); if (p.exists) S.profile = { ...p.data() }; } catch (e) { /* first visit */ }
     if (S.profile.textSize) applyTextSize(S.profile.textSize);
+    applyTheme();
     await new Promise((resolve) => {
       let first = true;
       S.itemsRef.onSnapshot((snap) => {

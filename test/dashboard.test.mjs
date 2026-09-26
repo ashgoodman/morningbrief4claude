@@ -4,11 +4,14 @@
 import { readFileSync } from "node:fs";
 
 const html = readFileSync(new URL("../plugin/skills/dashboard/day-sheet.html", import.meta.url), "utf8");
-const script = html.match(/<script>([\s\S]*)<\/script>/)[1];
+const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
+const script = scripts.at(-1);   // the page's main script; the first sets colours before it draws
 let failures = 0;
 const check = (label, cond) => { console.log((cond ? "ok   " : "FAIL ") + label); if (!cond) failures++; };
 
-try { new Function(script); check("page script parses", true); } catch (e) { check("page script parses: " + e.message, false); }
+scripts.forEach((src, i) => {
+  try { new Function(src); check(`page script ${i + 1} of ${scripts.length} parses`, true); } catch (e) { check(`page script ${i + 1} parses: ` + e.message, false); }
+});
 
 const src = script.slice(script.indexOf("function b64ToBinary"), script.indexOf("async function saveAttachment"));
 const f = new Function(src + "\nreturn { b64ToBinary, mimeTree, findPart, partFilename, partBytes };")();
