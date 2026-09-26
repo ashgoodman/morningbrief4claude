@@ -750,7 +750,7 @@ async function triage(entries) {
 async function refreshAll() {
   if (S.busy) return;
   S.busy = true; $("refreshBtn").disabled = true;
-  setStatus(S.profile.scope === "inbox" ? "Checking your whole inbox and calendar…" : "Checking your calendar and messages…");
+  setStatus(S.profile.scope === "inbox" ? "Checking your whole inbox and today's calendar…" : "Checking today's calendar and new email…");
   const toTriage = [];
   const cal = loadCalendar(true);
   S.gmailErr = null;
@@ -818,7 +818,7 @@ function render() {
   }, n === null ? null : h("b", {}, n), label)));
 
   const scope = S.profile.scope === "inbox" ? "inbox" : "day";
-  $("scope").replaceChildren(h("span", {}, "Looking at"), h("div", { class: "seg", role: "group", "aria-label": "Which email to look at" },
+  $("scope").replaceChildren(h("span", {}, "Email from"), h("div", { class: "seg", role: "group", "aria-label": "Which email to look at; the calendar always shows today" },
     h("button", { type: "button", "aria-pressed": String(scope === "day"), onclick: () => setScope("day") }, "Last 24 hours"),
     h("button", { type: "button", "aria-pressed": String(scope === "inbox"), onclick: () => setScope("inbox") }, "Whole inbox")),
     h("label", { class: "inline", for: "autoArchive", style: "margin-left:auto" },
