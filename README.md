@@ -49,7 +49,7 @@ them from Gmail.
 
 In Claude, **Customize → Plugins**, then either:
 
-- **Upload** `dist/mb4c-plugin-0.4.1.zip`; or
+- **Upload** `dist/mb4c-plugin-0.4.2.zip`; or
 - **Add marketplace**, enter `ashgoodman/morningbrief4claude`, and install
   **Morning Brief for Claude** (needs this repository to be readable by the
   person installing it).
@@ -105,8 +105,9 @@ Not yet verified:
 | `plugin/skills/dashboard/` | `/mb4c:dashboard` and `day-sheet.html`, the Day Sheet page |
 | `plugin/skills/brief/` | `/mb4c:brief` |
 | `.claude-plugin/marketplace.json` | Makes this repository a plugin marketplace |
-| `dist/` | Built plugin zip |
+| `dist/` | Built plugin zip, and the tester and user guides as PDFs |
 | `docs/USAGE.md` | User guide |
+| `docs/TESTING.md` | Guide for testers: install, what to try, how to report |
 | `scripts/build-zip.sh` | Builds the zip |
 | `test/` | Day Sheet checks |
 

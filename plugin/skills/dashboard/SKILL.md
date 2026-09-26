@@ -84,7 +84,9 @@ Give the user the link and tell them:
    Gmail, Google Calendar, Google Drive and Claude (Claude sorts new email
    by priority, using a little of their own usage). Allow them.
 2. It refreshes itself when opened if the last refresh is over two hours
-   old; the **Refresh** button does it on demand.
+   old; **Refresh** (the circular arrow at the top) does it on demand.
+   **Settings** (the gear) holds working days and hours, colours and
+   light or dark, text size and the rest.
 3. It's private to them. Their choices (done, reminders, sender rules) are
    saved in the page and follow them across devices.
 4. Pin it or bookmark it so it's one tap away each morning.
