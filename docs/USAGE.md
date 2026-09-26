@@ -54,6 +54,9 @@ update it later, type `/mb4c:dashboard`.
   email from the past day; anything already on your list stays until you deal
   with it. Whole inbox sorts everything in your inbox (up to 150 threads per
   refresh). This switch only affects email: the calendar always shows today.
+- **Text: Small | Medium | Large.** Changes the size of all the text on the
+  page. Your choice is saved with your other settings, so it stays the same
+  the next time you open the Day Sheet.
 - **Archive in Gmail when handled.** Tick it once: from then on, marking an
   email Done, Replied or Delegated also archives it in Gmail.
 
