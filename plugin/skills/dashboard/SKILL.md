@@ -1,6 +1,6 @@
 ---
 name: dashboard
-description: Create (or update) the user's own MB4C Day Sheet - an interactive dashboard of today's calendar and every unanswered email, ranked by priority, with done, replied, delegated, remind-me, reschedule, draft-reply, archive, label and save-attachment-to-Drive actions. Use when the user runs /mb4c:dashboard, asks for their day sheet or morning dashboard, or asks to install or update it.
+description: Create (or update) the user's own MB4C Day Sheet - an interactive dashboard of today's calendar and every unanswered email, ranked by priority, with done, replied, delegated, remind-me, reschedule, draft-reply, archive, label, delete and save-attachment-to-Drive actions. Use when the user runs /mb4c:dashboard, asks for their day sheet or morning dashboard, or asks to install or update it.
 ---
 
 # Publish the Day Sheet
@@ -53,7 +53,7 @@ Publish `day-sheet.html` as an artifact with:
 {
   "mcp": {
     "servers": [
-      { "server": "Gmail", "tools": ["search_threads", "get_thread", "get_message", "create_draft", "list_labels", "create_label", "label_thread", "unlabel_thread", "mark_thread_spam"] },
+      { "server": "Gmail", "tools": ["search_threads", "get_thread", "get_message", "create_draft", "list_labels", "create_label", "label_thread", "unlabel_thread", "mark_thread_spam", "trash_thread", "untrash_thread"] },
       { "server": "Google Calendar", "tools": ["list_calendars", "list_events", "update_event", "create_event", "respond_to_event"] },
       { "server": "Google Drive", "tools": ["create_file"] }
     ]
