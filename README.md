@@ -21,6 +21,11 @@ Google Calendar through Claude's connectors.
   is on WhatsApp.
 - **Waiting on others**: mail you sent that hasn't had an answer, summarised,
   with a nudge draft.
+- **New email and New event**: write an email yourself or have Claude write
+  it from a note, saved to Gmail Drafts; add your own calendar events, such
+  as appointments.
+- **Drafts**: your Gmail drafts in one list, each with Send (after you
+  confirm), Open in Gmail and Delete.
 - **Inbox zero**: switch from "last 24 hours" to the whole inbox, and have
   handled email archived in Gmail automatically.
 - **Start of the week**: on the first day of your week, what's been waiting
@@ -31,9 +36,10 @@ Google Calendar through Claude's connectors.
   email stays listed, and sender rules; **keyboard shortcuts** on a
   computer.
 
-Nothing is sent, and nothing is archived, deleted, filed or booked without a
-tap, except what your own sender rules say to do. Replies are drafts; you send
-them from Gmail.
+Replies are saved as Gmail drafts. An email is sent only when you choose
+**Send** on the Drafts screen and confirm, or send it from Gmail yourself.
+Nothing is archived, deleted, filed or booked without a tap, except what your
+own sender rules say to do.
 
 **How to use it:** see [docs/USAGE.md](docs/USAGE.md).
 

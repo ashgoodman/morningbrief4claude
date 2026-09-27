@@ -10,6 +10,9 @@ From the page you can:
 - draft replies into Gmail Drafts;
 - mark emails done, replied or delegated, with a check-back date;
 - set reminders;
+- write a new email, yourself or with Claude from a short note, and see all
+  your Gmail drafts in one place, each with Send, Open in Gmail and Delete;
+- add your own calendar events, such as appointments;
 - book time for work, or let **Plan my day** lay out your work and
   call-backs in your free time;
 - archive, label, report spam or delete;
@@ -19,9 +22,10 @@ From the page you can:
 Settings cover working days and hours, calendars, colour themes, light or
 dark, text size and sender rules.
 
-Nothing is sent: replies are saved as drafts for you to send from Gmail.
-Nothing in Gmail or your calendar changes unless you tap it, or a sender
-rule you made says so.
+Replies and new emails are saved as Gmail drafts. An email is sent only
+when you choose **Send** on the Drafts screen and confirm the recipients, or
+send it from Gmail yourself. Nothing in Gmail or your calendar changes
+unless you tap it, or a sender rule you made says so.
 
 ## Requirements
 
@@ -49,14 +53,18 @@ and offers to schedule a daily text brief.
     choose), mail you sent in the last three weeks (for "waiting on
     others"), your labels, and the full message when you save an
     attachment.
+  - It **reads** your drafts when you open the Drafts screen.
   - It **writes** only when you tap an action: a draft, a label, archive,
-    spam, trash, or the undo of those. Sender rules you create apply spam,
-    or a label and archive, to new mail from that sender on each refresh.
+    spam, trash, deleting a draft, or the undo of those.
+  - It **sends** an email only when you choose Send on a draft and then
+    confirm. The confirm step shows the From address and the recipients.
+  - Sender rules you create apply spam, or a label and archive, to new mail
+    from that sender on each refresh.
 - **Google Calendar**, through your own connector:
   - It **reads** your calendars, events and invitations.
-  - It **writes** only when you tap an action: it creates work blocks and
-    reminders, moves events, and answers invitations. Moving an event or
-    answering an invitation can notify the other guests.
+  - It **writes** only when you tap an action: it creates work blocks,
+    reminders and events you add, moves events, and answers invitations.
+    Moving an event or answering an invitation can notify the other guests.
 - **Google Drive** (optional): it creates a file only when you tap **Save
   to Drive**.
 - **Claude:** email text is sent to Claude, using your own Claude account

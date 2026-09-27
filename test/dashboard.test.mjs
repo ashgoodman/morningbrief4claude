@@ -82,5 +82,10 @@ check("block: marked in its description", g.isBlockEvent({ id: "x", summary: "Dr
 check("block: older 'MB4C: ' title still counts", g.isBlockEvent({ id: "y", summary: "MB4C: Draft quote" }, ids));
 check("block: an ordinary event is not one", !g.isBlockEvent({ id: "z", summary: "Team stand-up", description: "Weekly" }, ids));
 
+const pa = new Function(script.slice(script.indexOf("function parseAddresses"), script.indexOf("function openNewEmail")) + "\nreturn parseAddresses;")();
+const addr = pa('Dr Reyes <reyes@clinic.ph>, sam@example.com; not-an-address');
+check("email: reads plain and named addresses", addr.out.join() === "reyes@clinic.ph,sam@example.com");
+check("email: reports what isn't an address", addr.bad.length === 1 && addr.bad[0] === "not-an-address");
+
 console.log(failures ? `\n${failures} FAILED` : "\nall passed");
 process.exit(failures ? 1 : 0);

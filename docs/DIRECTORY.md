@@ -31,7 +31,7 @@ stands:
 | `name` in lowercase letters, digits and hyphens | Done: `mb4c` |
 | `description`, `author` and `version` set | Done |
 | No `.DS_Store` or other system files; no symlinks | Done |
-| Every non-image file under 256 KiB | Done: the largest, `day-sheet.html`, is about 143 KiB |
+| Every non-image file under 256 KiB | Done: the largest, `day-sheet.html`, is about 162 KiB |
 | Only text files in the plugin folder, no PDFs or zips | Done: the zip and PDFs are in `dist/`, outside the plugin folder |
 | No MCP servers, hooks or package launchers | Done: MB4C uses the connectors people already have |
 | Readable source, not minified | Done |
@@ -97,4 +97,7 @@ These describe what the code does. Check them before you submit.
 - **How long is data kept?** Handled emails are removed after 7, 14 or 30
   days (the person's setting, 14 by default). Open items, settings and
   sender rules stay until the person deletes them or their Day Sheet.
+- **Does it send email?** Only when the person chooses **Send** on a draft
+  in the Drafts screen and confirms the recipients. Replies and new emails
+  are otherwise saved as drafts.
 - **Is it intended for people under 18?** No.

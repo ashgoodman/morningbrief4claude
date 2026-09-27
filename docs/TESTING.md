@@ -22,8 +22,10 @@ find. Everything the Day Sheet does is explained in the user guide
 Nobody else, including the person who sent you this, can see your email or
 calendar through it.
 
-**Nothing is sent.** Replies are saved as Gmail drafts; you send them from
-Gmail yourself.
+**Nothing is sent unless you confirm it.** Replies and new emails are saved
+as Gmail drafts. The Drafts screen can send a draft, but only after you
+select **Send…** and then confirm the recipients. For testing, send only to
+yourself.
 
 **Some buttons do change Gmail or your calendar**, when you tap them:
 
@@ -40,7 +42,7 @@ that don't matter.
 ## 1. Install
 
 1. In Claude, open **Customize → Plugins**.
-2. Select **Add → Upload plugin** and choose **mb4c-plugin-0.5.1.zip**.
+2. Select **Add → Upload plugin** and choose **mb4c-plugin-0.6.0.zip**.
 3. Start a new task (or chat) and type **/mb4c:setup**.
 
 Claude then walks you through three steps:
@@ -93,6 +95,22 @@ Tick these off as you go. Anything that surprises you is worth reporting.
       the rest and check your calendar.
 - [ ] If you have unanswered invitations, **Accept / Maybe / Decline**. This
       tells the organiser.
+- [ ] **+ Event**: add a made-up appointment with a reminder, check it's in
+      your calendar, then delete it there.
+
+### Email of your own
+
+- [ ] **+ Email**: type a note of what to say, select **Write it for me**,
+      then **Save to Gmail Drafts**.
+- [ ] Open **Drafts** (the envelope, top right) and find that draft.
+- [ ] **Send…** a draft **addressed to yourself**, confirm, and check it
+      arrives.
+- [ ] **Delete…** a draft you don't need.
+- [ ] If Gmail collects mail for more than one of your addresses: draft a
+      reply to an email sent to one of the other addresses. Note which From
+      address the Day Sheet says it will be sent from, and whether it warns
+      you. Tell us what it said. This is one of the things we most need to
+      learn.
 
 ### Settings (the gear, top right)
 
