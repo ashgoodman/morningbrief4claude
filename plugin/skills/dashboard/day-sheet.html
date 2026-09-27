@@ -846,13 +846,13 @@ const latestOf = (msgs) => [...(msgs || [])].sort((a, b) => Number(a.internalDat
 async function fullThread(id, format, fresh) {
   return call(GMAIL, "get_thread", { threadId: id, messageFormat: format }, { cache: fresh ? { refresh: true } : { staleTime: 60000 } });
 }
-// Every thread now in the inbox, up to `cap`. `complete` is false when the
-// inbox holds more than that, so a missing thread can't be taken as gone.
-async function inboxThreadIds(cap) {
+// Every thread matching `query`, up to `cap`. `complete` is false when there
+// are more than that, so a missing thread can't be taken as gone.
+async function threadIds(query, cap, includeTrash) {
   const ids = new Set(); let pageToken, complete = false;
   while (ids.size < cap) {
     const p = await call(GMAIL, "search_threads", {
-      query: "in:inbox -in:chats", pageSize: 50, view: "THREAD_VIEW_MINIMAL", ...(pageToken ? { pageToken } : {}),
+      query, pageSize: 50, view: "THREAD_VIEW_METADATA_ONLY", ...(includeTrash ? { includeTrash: true } : {}), ...(pageToken ? { pageToken } : {}),
     }, { cache: { refresh: true } });
     for (const t of (p && p.threads) || []) ids.add(t.id);
     pageToken = p && p.nextPageToken;
@@ -927,11 +927,22 @@ async function refreshGmail(toTriage) {
   // Gmail rather than from a cache, so clearing the inbox clears the page.
   const open = [...S.items.values()].filter((it) => it.source === "email" && it.kind !== "awaiting" && it.status === "open" && !seen.has(it.id));
   if (!open.length) return;
-  const inbox = await inboxThreadIds(1000).catch(() => null);
+  const inbox = await threadIds("in:inbox -in:chats", 1000).catch(() => null);
   const gone = inbox && inbox.complete ? open.filter((it) => !inbox.ids.has(it.ref))
     : open.filter((it) => !(inbox && inbox.ids.has(it.ref))).slice(0, 60);
+  if (!gone.length) return;
+  // Gmail's get_thread can't read a thread in Trash ("The caller does not have
+  // permission"), so trashed threads are found with a Trash search instead.
+  const trash = await threadIds("in:trash", 500, true).catch(() => null);
   await pool(gone, 4, async (it) => {
-    const full = await fullThread(it.ref, "MINIMAL", true);
+    if (trash && trash.ids.has(it.ref)) { saveItem(it.id, { status: "deleted", note: "Deleted in Gmail" }); return; }
+    let full;
+    try { full = await fullThread(it.ref, "MINIMAL", true); }
+    catch (e) {
+      // Not in the inbox and not readable (deleted for good, or otherwise gone).
+      if (inbox && inbox.complete) saveItem(it.id, { status: "done", note: "No longer in your Gmail inbox" });
+      return;
+    }
     const last = latestOf(full && full.messages);
     if (!last) return;
     const labels = last.labelIds || [];
