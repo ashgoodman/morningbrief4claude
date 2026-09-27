@@ -201,3 +201,9 @@ what to do about it>
 
 After the brief, offer once: "I can draft replies for any of the quick-reply
 items. Say which." Drafts go into Gmail as drafts; never send them.
+
+Save each draft with `htmlBody` only, and leave `body` empty. Write the
+reply as plain text, escape `&`, `<` and `>`, and put `<br>` at each line
+break. The Gmail connector points every link at a google.com/url redirect.
+In the HTML, the link still shows the address as written. A plain-text part
+would show the redirect address itself.

@@ -250,6 +250,11 @@ the email was sent to. If they're different, it says so, such as "It will
 be sent from you@main.com, but the email was sent to sales@yourshop.com",
 so you can change From in Gmail before sending.
 
+**Links in drafts:** the Gmail connector sends every link in a draft through
+a google.com/url redirect. You can't turn that off from the Day Sheet. The
+Day Sheet saves drafts so that each link still shows the address you typed.
+Clicking the link, or hovering over it, shows the redirect.
+
 ### Swipes (touch screens)
 
 - **Swipe right**: Done.

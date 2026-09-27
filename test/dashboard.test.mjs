@@ -87,5 +87,9 @@ const addr = pa('Dr Reyes <reyes@clinic.ph>, sam@example.com; not-an-address');
 check("email: reads plain and named addresses", addr.out.join() === "reyes@clinic.ph,sam@example.com");
 check("email: reports what isn't an address", addr.bad.length === 1 && addr.bad[0] === "not-an-address");
 
+const dh = new Function(script.slice(script.indexOf("function draftHtml"), script.indexOf("function parseAddresses")) + "\nreturn draftHtml;")();
+check("draft: escapes HTML and keeps line breaks", dh('Hi <Sam> & "co"\r\nSee https://example.com/a?b=1&c=2') === '<div dir="auto">Hi &lt;Sam&gt; &amp; &quot;co&quot;<br>See https://example.com/a?b=1&amp;c=2</div>');
+check("draft: empty text is an empty block", dh("") === '<div dir="auto"></div>');
+
 console.log(failures ? `\n${failures} FAILED` : "\nall passed");
 process.exit(failures ? 1 : 0);

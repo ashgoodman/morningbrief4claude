@@ -1986,7 +1986,7 @@ function draftPanel(it) {
     S.sheet.working = true; renderSheet();
     try {
       const subj = /^re:/i.test(it.subject || "") ? it.subject : "Re: " + (it.subject || "");
-      const p = await call(GMAIL, "create_draft", { to: it.fromAddr ? [it.fromAddr] : undefined, subject: subj, body: ta.value, replyToMessageId: it.lastMsgId });
+      const p = await call(GMAIL, "create_draft", { to: it.fromAddr ? [it.fromAddr] : undefined, subject: subj, htmlBody: draftHtml(ta.value), replyToMessageId: it.lastMsgId });
       S.sheet.working = false;
       const sh = S.sheet;
       sh.draft = { ...d, text: ta.value, saved: (p && p.viewUrl) || true, from: null };
@@ -2289,6 +2289,13 @@ async function openNewEvent(day) {
 // ------------------------------------------------------------- new email
 // A new email of your own, saved to Gmail Drafts; it goes only when the
 // viewer sends it from Drafts or Gmail. Claude can write it from a short note.
+// Draft text goes to Gmail as HTML only. Claude's Gmail connector points
+// every link at a google.com/url redirect; in HTML the words you see stay as
+// typed, but in a plain-text part the redirect address itself is what shows.
+function draftHtml(text) {
+  const esc = String(text || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  return '<div dir="auto">' + esc.replace(/\r\n?/g, "\n").replace(/\n/g, "<br>") + "</div>";
+}
 function parseAddresses(text) {
   const out = [], bad = [];
   for (const part of String(text || "").split(/[,;\n]+/)) {
@@ -2356,7 +2363,7 @@ Reply with only JSON: {"subject": string, "body": string}`, { cache: false });
     try {
       const d = await call(GMAIL, "create_draft", {
         ...(T.out.length ? { to: T.out } : {}), ...(C.out.length ? { cc: C.out } : {}), ...(B.out.length ? { bcc: B.out } : {}),
-        subject: subj.value.trim(), body: body.value,
+        subject: subj.value.trim(), htmlBody: draftHtml(body.value),
       });
       save.textContent = "Saved ✓ Save again"; save.disabled = false;
       links.replaceChildren(...(d && d.viewUrl ? appLinks("gmail", d.viewUrl) : []));
@@ -2405,7 +2412,10 @@ async function openDrafts() {
       const cc = [].concat(dField(d, "ccRecipients", "cc_recipients") || []);
       const bcc = [].concat(dField(d, "bccRecipients", "bcc_recipients") || []);
       const subject = decode(dField(d, "subject") || "(no subject)");
-      const body = String(dField(d, "plaintextBody", "plaintext_body", "snippet") || "").trim();
+      // Drafts saved from here are HTML only, with no plain-text part to show.
+      const html = dField(d, "htmlBody", "html_body");
+      const body = String(dField(d, "plaintextBody", "plaintext_body")
+        || (html ? decode(String(html).replace(/<br\s*\/?>|<\/(div|p)>/gi, "\n").replace(/<[^>]*>/g, "")) : decode(dField(d, "snippet") || ""))).trim();
       const url = dField(d, "viewUrl", "view_url");
       const when = dField(d, "date");
       const everyone = [...to, ...cc, ...bcc];
