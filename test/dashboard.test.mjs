@@ -42,8 +42,8 @@ const line = (name) => {
   return m[0];
 };
 const pure = script.slice(script.indexOf("// ---- pure: free time"), script.indexOf("// ---- pure: end"));
-const helpers = ["localDay", "addDays", "dayStart", "evStart", "evEnd", "evAllDay", "effPrio", "isSnoozed", "isOpen"].map(line).join("\n");
-const g = new Function(helpers + "\n" + pure + "\nreturn { freeRanges, planBlocks, planTasks, weekStartOf, dayStart };")();
+const helpers = ["localDay", "addDays", "dayStart", "evStart", "evEnd", "evAllDay", "effPrio", "isSnoozed", "isOpen", "BLOCK_PREFIX", "BLOCK_NOTE"].map(line).join("\n");
+const g = new Function(helpers + "\n" + pure + "\nreturn { freeRanges, planBlocks, planTasks, weekStartOf, dayStart, isBlockEvent, BLOCK_NOTE };")();
 
 const at = (day, hm) => { const d = g.dayStart(day); const [a, b] = hm.split(":").map(Number); d.setHours(a, b, 0, 0); return d.getTime(); };
 const hm = (ms) => new Date(ms).toTimeString().slice(0, 5);
@@ -75,6 +75,12 @@ check("plan: blocks are 30 minutes to 2 hours; calls 15 + 5 each", tasks[1].minu
 check("week starting Monday: Wed 30 Sep 2026 -> Mon 28 Sep", g.weekStartOf("2026-09-30", 1) === "2026-09-28");
 check("week starting Sunday: Wed 30 Sep 2026 -> Sun 27 Sep", g.weekStartOf("2026-09-30", 0) === "2026-09-27");
 check("week starting on the day itself", g.weekStartOf("2026-09-30", 3) === "2026-09-30");
+
+const ids = new Set(["booked-here"]);
+check("block: remembered by its id", g.isBlockEvent({ id: "booked-here", summary: "Draft quote" }, ids));
+check("block: marked in its description", g.isBlockEvent({ id: "x", summary: "Draft quote", description: g.BLOCK_NOTE + "\n\nFrom: Sam" }, ids));
+check("block: older 'MB4C: ' title still counts", g.isBlockEvent({ id: "y", summary: "MB4C: Draft quote" }, ids));
+check("block: an ordinary event is not one", !g.isBlockEvent({ id: "z", summary: "Team stand-up", description: "Weekly" }, ids));
 
 console.log(failures ? `\n${failures} FAILED` : "\nall passed");
 process.exit(failures ? 1 : 0);

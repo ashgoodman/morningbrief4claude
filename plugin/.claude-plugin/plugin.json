@@ -1,7 +1,7 @@
 {
   "name": "mb4c",
   "displayName": "Morning Brief for Claude",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "description": "A daily Day Sheet for Gmail and Google Calendar: every unanswered email ranked by priority, today's schedule, and one-tap actions to reply, book time, delegate, file or delete.",
   "author": {
     "name": "Ashley Goodman"

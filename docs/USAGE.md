@@ -80,16 +80,22 @@ schedule. It lays out your open **Work** emails and your **call-backs** in
 that day's free time:
 
 - Each Work email gets its own block, sized from Claude's estimate, between
-  30 minutes and 2 hours. Call-backs share one block: 15 minutes plus 5 per
-  call.
+  30 minutes and 2 hours to start with. Call-backs share one block: 15
+  minutes plus 5 per call.
 - Highest priority goes first, each in the earliest gap it fits.
+- **Change any length** (10 minutes to 3 hours) and **change the order**
+  with ↑ and ↓. The times move to fit as you go. An item that no longer fits
+  stays in the list marked **Doesn't fit**, so you can shorten it, move it
+  earlier, or untick it.
 - It only uses your working days and hours (set in Settings), keeps 10
   minutes clear of other events, and never suggests time that has already
   passed. On a day you don't work, it asks first: **Plan it anyway**, or plan
   your next working day instead.
-- Untick any you don't want, then **Add to your calendar**. Anything that
-  doesn't fit is listed so you can plan it on the next day. Emails that
+- Untick any you don't want, then **Add to your calendar**. Emails that
   already have a block from today on are left out.
+- Blocks keep their plain title (for example "Draft the Acme quote"). The
+  first line of each block's description says "Added to your calendar by
+  MB4C (Morning Brief for Claude)", followed by the email it's for.
 
 ### Needs you
 
@@ -127,7 +133,7 @@ Buttons you can tap straight from the card:
 | Button | What it does |
 |---|---|
 | **Draft a quick reply →** / **Draft a reply →** | Opens the item with Claude already writing a reply. Edit it, then **Save to Gmail Drafts**. Nothing is sent; you send it from Gmail. |
-| **Book time →** | Opens the item with the booking fields ready: your next working day, and the first free gap in your working hours from that day's calendar. Change the day and it finds a gap on that day. **Add to calendar** books an "MB4C: …" block. |
+| **Book time →** | Opens the item with the booking fields ready: your next working day, and the first free gap in your working hours from that day's calendar. Change the day and it finds a gap on that day. **Add to calendar** books the block, with a note in its description that MB4C added it. |
 | **Call +63…** | Starts a phone call on a phone. |
 | **WhatsApp** | Opens a WhatsApp chat with that number. Shown only when the email says the number is on WhatsApp. |
 | **Copy** | Copies the number. |

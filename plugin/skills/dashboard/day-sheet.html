@@ -229,8 +229,16 @@ kbd{display:inline-block;min-width:1.75rem;text-align:center;font:500 0.75rem/1.
 .setgroup .check{margin-bottom:0}
 .plan{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .plan .check{margin:0;align-items:center}
-.plan time{font:500 0.8125rem var(--mono);font-variant-numeric:tabular-nums;color:var(--muted);min-width:7.5rem}
 .plan .sub{display:block;font-size:0.8125rem;color:var(--muted)}
+.planrow{display:grid;grid-template-columns:auto 1fr;gap:8px 12px;align-items:start;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--ground)}
+.planrow > input{width:18px;height:18px;margin-top:3px}
+.planmain{display:grid;gap:2px;min-width:0;overflow-wrap:anywhere;cursor:pointer}
+.planmain time{font:500 0.8125rem var(--mono);font-variant-numeric:tabular-nums;color:var(--muted)}
+.planrow.nofit time{color:var(--p1)}
+.planrow.off .planmain{opacity:.6}
+.planctl{grid-column:2;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.planctl select{min-height:36px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);padding:4px 8px}
+.iconbtn.small{width:36px;height:36px;font-size:1rem}
 .reset{border:1px solid var(--accent);background:var(--accent-soft);border-radius:12px;padding:12px 14px;margin-bottom:18px;display:grid;gap:10px}
 .reset h3{font:600 1.0625rem var(--display);margin:0}
 .reset .subhead{margin:4px 0 0}
@@ -301,7 +309,8 @@ kbd{display:inline-block;min-width:1.75rem;text-align:center;font:500 0.75rem/1.
 const GMAIL = "Gmail";
 const CAL = "Google Calendar";
 const DRIVE = "Google Drive";
-const BLOCK_PREFIX = "MB4C: ";
+const BLOCK_PREFIX = "MB4C: ";   // titles of blocks booked before 0.5.0
+const BLOCK_NOTE = "Added to your calendar by MB4C (Morning Brief for Claude).";
 const INBOX_CAP = 150;           // threads per refresh in whole-inbox mode
 const PRIO = {
   1: { label: "P1", name: "Today" },
@@ -769,7 +778,24 @@ function weekStartOf(dayStr, weekStart) {
   const back = (dayStart(dayStr).getDay() - weekStart + 7) % 7;
   return addDays(dayStr, -back);
 }
+// An MB4C block: one this page booked (its id is remembered), one whose
+// description carries the MB4C note, or an older one titled "MB4C: ...".
+function isBlockEvent(ev, ids) {
+  return String(ev.summary || "").startsWith(BLOCK_PREFIX) || !!(ids && ids.has(ev.id)) || String(ev.description || "").includes(BLOCK_NOTE);
+}
 // ---- pure: end
+
+function blockIds() {
+  const ids = new Set(S.profile.blockIds || []);
+  for (const it of S.items.values()) if (it.blockEventId) ids.add(it.blockEventId);
+  return ids;
+}
+const isBlock = (ev) => isBlockEvent(ev, blockIds());
+function rememberBlock(created) {
+  const id = created && created.id;
+  if (id) saveProfile({ blockIds: [...(S.profile.blockIds || []), id].slice(-300) });
+}
+const evTitle = (ev) => { const t = String(ev.summary || "(no title)"); return t.startsWith(BLOCK_PREFIX) ? t.slice(BLOCK_PREFIX.length) : t; };
 
 function freeSlots(dayStr, minutes, events) {
   return freeRanges(dayStr, events, pref("workStart"), pref("workEnd"), Date.now())
@@ -1083,7 +1109,7 @@ function render() {
   const p1 = sig.filter((i) => effPrio(i) === 1).length;
   const calls = sig.filter((i) => (i.tags || []).includes("call_back")).length;
   const dayEvents = viewDay().events || [];
-  const blocks = dayEvents.filter((e) => String(e.summary || "").startsWith(BLOCK_PREFIX)).length;
+  const blocks = dayEvents.filter(isBlock).length;
   const views = [
     ["all", null, "All"],
     ["today", p1, "for today", "p1"],
@@ -1145,7 +1171,7 @@ function renderSchedule() {
   const now = new Date();
   const evs = vd.events.filter((e) => {
     const st = S.items.get("ev-" + e.id);
-    if (S.view === "blocks" && !String(e.summary || "").startsWith(BLOCK_PREFIX)) return false;
+    if (S.view === "blocks" && !isBlock(e)) return false;
     return !st || st.status !== "removed";
   });
   $("schedCount").textContent = evs.length ? `${evs.length} ${evs.length === 1 ? "event" : "events"}` : "";
@@ -1153,7 +1179,7 @@ function renderSchedule() {
   host.replaceChildren(...[partial].filter(Boolean), h("ol", { class: "timeline" }, evs.map((e) => {
     const a = evStart(e), b = evEnd(e), all = evAllDay(e);
     const st = S.items.get("ev-" + e.id);
-    const block = String(e.summary || "").startsWith(BLOCK_PREFIX);
+    const block = isBlock(e);
     const others = (e.attendees || []).filter((x) => !x.self).length;
     const meet = evMeet(e);
     const soon = !all && b > now && a - now < 15 * 60000;
@@ -1162,7 +1188,7 @@ function renderSchedule() {
       h("time", {}, all ? "All day" : fmtTime(a)),
       h("div", {},
         h("div", { class: "t" }, st && st.status === "done" ? h("span", { class: "donemark", role: "img", "aria-label": "Done", title: "Done" }, "✓") : null,
-          block ? String(e.summary).slice(BLOCK_PREFIX.length) : (e.summary || "(no title)")),
+          evTitle(e)),
         h("div", { class: "sub" }, [all ? null : `until ${fmtTime(b)}`, e.eventType === "BIRTHDAY" ? "Birthday" : null, others ? `${others} guest${others === 1 ? "" : "s"}` : null, e.location || null, e._calName && !e._primary && e._calName !== "Calendar" ? e._calName : null].filter(Boolean).join(" · ")),
         meet && (!b || b > now) ? h("a", { class: "join", href: appHref("meet", meet), target: "_blank", rel: "noopener" }, soon ? "Join now" : "Join Meet") : null,
         inviteButtons(e)),
@@ -1541,7 +1567,7 @@ function renderSheet() {
   } else {
     ev = S.invites.find((e) => e.id === sh.ev.id) || S.events.find((e) => e.id === sh.ev.id) || sh.ev;
     const a = evStart(ev);
-    title = String(ev.summary || "(no title)").replace(BLOCK_PREFIX, "");
+    title = evTitle(ev);
     meta = evAllDay(ev) ? "All day " + fmtDay(localDay(a)) : `${fmtDay(localDay(a))}, ${fmtTime(a)} – ${fmtTime(evEnd(ev))}`;
     it = S.items.get("ev-" + ev.id) || null;
   }
@@ -1555,7 +1581,7 @@ function renderSheet() {
   const acts = [];
   if (ev) {
     const past = evEnd(ev) && evEnd(ev) < new Date();
-    const block = String(ev.summary || "").startsWith(BLOCK_PREFIX);
+    const block = isBlock(ev);
     if (block && past) acts.push(act("Move to tomorrow", "Same time tomorrow", () => moveEvent(ev, addDays(localDay(evStart(ev)), 1), evStart(ev).toTimeString().slice(0, 5))));
     // Done ticks an event off; it stays on the schedule with a check mark.
     if (it && it.status === "done") acts.push(act("Not done", "Take the check mark off", () => { closeSheet(); saveItem(id, { status: "open" }); toast("Check mark removed", () => saveItem(id, { status: "done" })); }));
@@ -1669,12 +1695,13 @@ async function addReminderEvent(id, day) {
   const [rh, rm] = String(pref("remindAt")).split(":").map(Number);
   const start = dayStart(day); start.setHours(rh || 0, rm || 0, 0, 0);
   try {
-    await call(CAL, "create_event", {
-      summary: BLOCK_PREFIX + "Reminder: " + (it.who || "follow up"),
+    const created = await call(CAL, "create_event", {
+      summary: "Reminder: " + (it.who || "follow up"),
       startTime: start.toISOString(), endTime: new Date(start.getTime() + 15 * 60000).toISOString(), timeZone: tz,
-      description: [it.subject, it.gist, it.link].filter(Boolean).join("\n"),
+      description: [BLOCK_NOTE, "", it.subject, it.gist, it.link].filter((x) => x !== null && x !== undefined).join("\n"),
       availability: "AVAILABILITY_FREE", overrideReminders: [{ method: "popup", minutes: 0 }],
     });
+    rememberBlock(created);
     loadDay(day, true);
     return true;
   } catch (e) { sheetError(e, CAL); return false; }
@@ -1839,10 +1866,11 @@ function bookPanel(it) {
     const s = dayStart(d.value); s.setHours(hh, mm, 0, 0);
     try {
       const p = await call(CAL, "create_event", {
-        summary: BLOCK_PREFIX + (it.gist || it.subject || "Work").slice(0, 80),
+        summary: (it.gist || it.subject || "Work").slice(0, 80),
         startTime: s.toISOString(), endTime: new Date(s.getTime() + Number(len.value) * 60000).toISOString(), timeZone: tz,
-        description: [`From: ${it.who}`, it.subject, it.link].filter(Boolean).join("\n"), availability: "AVAILABILITY_BUSY",
+        description: [BLOCK_NOTE, "", `From: ${it.who}`, it.subject, it.link].filter((x) => x !== null && x !== undefined).join("\n"), availability: "AVAILABILITY_BUSY",
       });
+      rememberBlock(p);
       saveItem(it.id, { blockEventId: (p && p.id) || null, blockStart: s.getTime() });
       await S.mcp.invalidate(CAL).catch(() => {});
       closeSheet(); toast(`Booked ${fmtDay(d.value)} at ${fmtTime(s)}`);
@@ -2043,33 +2071,67 @@ async function openPlan(day, anyway) {
   }
   if (S.sheet !== sh) return;
   const meta = `Free time between ${fmtHM(pref("workStart"))} and ${fmtHM(pref("workEnd"))}, kept 10 minutes clear of other events. Change your hours in Settings.`;
-  const tasks = planTasks([...S.items.values()], dayStart(localDay()).getTime());
-  if (!tasks.length) { sheetShell(title, meta, h("div", { class: "note" }, "Nothing to plan: every Work and call-back email is already booked, or there aren't any.")); return; }
-  const { placed, unplaced } = planBlocks(tasks, freeRanges(day, evs, pref("workStart"), pref("workEnd"), Date.now()));
-  const boxes = placed.map((p, i) => h("input", { id: "plan" + i, type: "checkbox", checked: true }));
+  const base = planTasks([...S.items.values()], dayStart(localDay()).getTime());
+  if (!base.length) { sheetShell(title, meta, h("div", { class: "note" }, "Nothing to plan: every Work and call-back email is already booked, or there aren't any.")); return; }
+  // The viewer can reorder, change each length and leave items out; the
+  // times re-flow into the day's free time every time.
+  const rows = base.map((t) => ({ ...t, on: true, booked: null }));
+  const busy = (spans) => spans.map(([a, b]) => ({ start: { dateTime: new Date(a).toISOString() }, end: { dateTime: new Date(b).toISOString() } }));
+  const list = h("ol", { class: "plan" });
+  const note = h("p", { class: "sethint", role: "status", style: "margin:0" });
   const btn = h("button", { class: "btn primary", type: "button" });
   const msg = h("div", { role: "status" });
-  const label = () => { const n = boxes.filter((b) => b.checked && !b.disabled).length; btn.textContent = n ? `Add ${n} block${n === 1 ? "" : "s"} to your calendar` : "Tick at least one"; btn.disabled = !n; };
-  boxes.forEach((b) => b.addEventListener("change", label));
-  label();
+  let placed = new Map();
+  const draw = (focusId) => {
+    const taken = rows.filter((t) => t.booked).map((t) => [t.booked.start, t.booked.end]);
+    const free = freeRanges(day, [...evs, ...busy(taken)], pref("workStart"), pref("workEnd"), Date.now());
+    placed = new Map(planBlocks(rows.filter((t) => t.on && !t.booked), free).placed.map((p) => [p.key, p]));
+    list.replaceChildren(...rows.map((t, i) => {
+      const p = placed.get(t.key), done = !!t.booked;
+      const box = h("input", { id: "plan-on-" + t.key, type: "checkbox", checked: t.on || done, disabled: done });
+      box.addEventListener("change", () => { t.on = box.checked; draw(box.id); });
+      const len = h("select", { id: "plan-len-" + t.key, "aria-label": "Length of " + t.title, disabled: done },
+        [...new Set([...PLAN_LENGTHS, t.minutes])].sort((x, y) => x - y).map((m) => h("option", { value: String(m), selected: m === t.minutes }, fmtLen(m))));
+      len.addEventListener("change", () => { t.minutes = Number(len.value); draw(len.id); });
+      const move = (d, id) => { const j = i + d; if (j < 0 || j >= rows.length) return; [rows[i], rows[j]] = [rows[j], rows[i]]; draw(id); };
+      const upId = "plan-up-" + t.key, downId = "plan-down-" + t.key;
+      const span = done ? t.booked : p;
+      const when = done ? "Booked " + fmtTime(new Date(span.start)) : !t.on ? "Left out" : p ? `${fmtTime(new Date(p.start))}–${fmtTime(new Date(p.end))}` : "Doesn't fit";
+      return h("li", { class: "planrow" + (t.on && !p && !done ? " nofit" : "") + (!t.on && !done ? " off" : "") },
+        box,
+        h("label", { class: "planmain", for: box.id }, h("time", {}, when), h("b", {}, t.title),
+          h("span", { class: "sub" }, t.kind === "calls" ? t.ids.map((id) => (S.items.get(id) || {}).who).filter(Boolean).join(", ") : PRIO[t.prio].label)),
+        h("div", { class: "planctl" }, len,
+          h("button", { id: upId, class: "iconbtn small", type: "button", "aria-label": `Move ${t.title} earlier`, title: "Earlier", disabled: i === 0 || done, onclick: () => move(-1, upId) }, "↑"),
+          h("button", { id: downId, class: "iconbtn small", type: "button", "aria-label": `Move ${t.title} later`, title: "Later", disabled: i === rows.length - 1 || done, onclick: () => move(1, downId) }, "↓")));
+    }));
+    const n = placed.size, misfit = rows.filter((t) => t.on && !t.booked && !placed.has(t.key)).length;
+    btn.textContent = n ? `Add ${n} block${n === 1 ? "" : "s"} to your calendar` : "Nothing to add";
+    btn.disabled = !n;
+    note.textContent = misfit ? `${misfit} ${misfit === 1 ? "doesn't" : "don't"} fit ${onDay(day)}. Shorten ${misfit === 1 ? "it" : "them"}, move ${misfit === 1 ? "it" : "them"} earlier, or leave ${misfit === 1 ? "it" : "them"} out.` : "";
+    const el = focusId && document.getElementById(focusId);
+    if (el && !el.disabled) el.focus();
+  };
   btn.addEventListener("click", async () => {
     btn.disabled = true; btn.textContent = "Booking…"; msg.replaceChildren();
     let n = 0;
-    for (const [i, p] of placed.entries()) {
-      if (!boxes[i].checked || boxes[i].disabled) continue;
-      const covers = p.ids.map((id) => S.items.get(id)).filter(Boolean);
+    for (const t of rows) {
+      const p = placed.get(t.key);
+      if (!p || t.booked) continue;
+      const covers = t.ids.map((id) => S.items.get(id)).filter(Boolean);
       try {
         const created = await call(CAL, "create_event", {
-          summary: BLOCK_PREFIX + String(p.title).slice(0, 80),
+          summary: String(t.title).slice(0, 80),
           startTime: new Date(p.start).toISOString(), endTime: new Date(p.end).toISOString(), timeZone: tz,
-          description: covers.map((c) => [`From: ${c.who}`, c.subject, c.callNumber ? "Number: " + c.callNumber : null, c.link].filter(Boolean).join("\n")).join("\n\n"),
+          description: BLOCK_NOTE + "\n\n" + covers.map((c) => [`From: ${c.who}`, c.subject, c.callNumber ? "Number: " + c.callNumber : null, c.link].filter(Boolean).join("\n")).join("\n\n"),
           availability: "AVAILABILITY_BUSY",
         });
+        rememberBlock(created);
         for (const c of covers) saveItem(c.id, { blockEventId: (created && created.id) || null, blockStart: p.start });
-        boxes[i].checked = false; boxes[i].disabled = true; n++;
+        t.booked = { start: p.start, end: p.end }; n++;
       } catch (e) {
         msg.replaceChildren(h("div", { class: "note bad" }, (n ? `Booked ${n}, then stopped. ` : "") + connectorMessage(CAL, e)));
-        label();
+        draw();
         if (n) loadDay(day, true);
         return;
       }
@@ -2078,17 +2140,11 @@ async function openPlan(day, anyway) {
     if (S.sheet === sh) closeSheet();
     toast(`Booked ${n} block${n === 1 ? "" : "s"} ${onDay(day)}`); loadDay(day, true);
   });
-  const rows = placed.map((p, i) => h("li", {}, h("label", { class: "check", for: "plan" + i }, boxes[i],
-    h("time", {}, `${fmtTime(new Date(p.start))}–${fmtTime(new Date(p.end))}`),
-    h("span", {}, h("b", {}, p.title), h("span", { class: "sub" }, p.kind === "calls"
-      ? p.ids.map((id) => (S.items.get(id) || {}).who).filter(Boolean).join(", ")
-      : `${PRIO[p.prio].label} · ${p.minutes} min`)))));
-  sheetShell(title, meta, h("div", { style: "display:grid;gap:12px" },
-    placed.length ? h("ol", { class: "plan" }, rows) : h("div", { class: "note" }, `No free gap long enough ${onDay(day)}.`),
-    unplaced.length ? h("div", { class: "note" }, `Doesn't fit ${onDay(day)}: ${unplaced.map((t) => t.title).join("; ")}. Plan the next day for ${unplaced.length === 1 ? "it" : "these"}.`) : null,
-    msg,
-    placed.length ? h("div", { class: "row" }, btn) : null));
+  draw();
+  sheetShell(title, meta + " Change a length or the order with ↑ ↓; the times move to fit.", h("div", { style: "display:grid;gap:12px" }, list, note, msg, h("div", { class: "row" }, btn)));
 }
+const PLAN_LENGTHS = [10, 15, 20, 30, 45, 60, 90, 120, 150, 180];
+function fmtLen(m) { return m < 60 ? `${m} min` : m % 60 ? `${Math.floor(m / 60)} h ${m % 60} min` : `${m / 60} h`; }
 
 // -------------------------------------------------------------- keyboard
 const SHORTCUTS = [
