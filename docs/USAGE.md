@@ -15,11 +15,22 @@ plugin, setting it up, and everything on the Day Sheet.
 
 ## Install
 
+**From a zip file** you were given:
+
 1. In Claude, open **Customize → Plugins**.
-2. Choose **Upload** and pick the `mb4c-plugin-<version>.zip` file you were
-   given. (Or, if you were given the GitHub address: **Add marketplace**, enter
-   `ashgoodman/morningbrief4claude`, and install **Morning Brief for Claude**.)
-3. Start a new task and type `/mb4c:setup`.
+2. Select **Add → Upload plugin** and choose the `mb4c-plugin-<version>.zip`
+   file.
+3. Start a new conversation and type `/mb4c:setup`.
+
+**From the GitHub repository:**
+
+1. Open **Customize → Plugins** and select **Add → Add marketplace**.
+2. Enter `ashgoodman/morningbrief4claude`.
+3. If the repository is private, Claude asks you to connect GitHub and give
+   the Claude GitHub App access to it. Your GitHub account must be able to
+   see the repository.
+4. Select **Morning Brief for Claude**, then **Add**.
+5. Start a new conversation and type `/mb4c:setup`.
 
 ## Setup (`/mb4c:setup`)
 

@@ -40,7 +40,7 @@ that don't matter.
 ## 1. Install
 
 1. In Claude, open **Customize → Plugins**.
-2. Choose **Upload** and pick **mb4c-plugin-0.5.0.zip**.
+2. Select **Add → Upload plugin** and choose **mb4c-plugin-0.5.1.zip**.
 3. Start a new task (or chat) and type **/mb4c:setup**.
 
 Claude then walks you through three steps:
