@@ -843,8 +843,22 @@ async function searchAll(query, cap) {
   return threads;
 }
 const latestOf = (msgs) => [...(msgs || [])].sort((a, b) => Number(a.internalDate || 0) - Number(b.internalDate || 0)).at(-1);
-async function fullThread(id, format) {
-  return call(GMAIL, "get_thread", { threadId: id, messageFormat: format }, { cache: { staleTime: 60000 } });
+async function fullThread(id, format, fresh) {
+  return call(GMAIL, "get_thread", { threadId: id, messageFormat: format }, { cache: fresh ? { refresh: true } : { staleTime: 60000 } });
+}
+// Every thread now in the inbox, up to `cap`. `complete` is false when the
+// inbox holds more than that, so a missing thread can't be taken as gone.
+async function inboxThreadIds(cap) {
+  const ids = new Set(); let pageToken, complete = false;
+  while (ids.size < cap) {
+    const p = await call(GMAIL, "search_threads", {
+      query: "in:inbox -in:chats", pageSize: 50, view: "THREAD_VIEW_MINIMAL", ...(pageToken ? { pageToken } : {}),
+    }, { cache: { refresh: true } });
+    for (const t of (p && p.threads) || []) ids.add(t.id);
+    pageToken = p && p.nextPageToken;
+    if (!pageToken) { complete = true; break; }
+  }
+  return { ids, complete };
 }
 // Search previews show only a thread's oldest few messages; read longer threads whole.
 async function resolveThreads(threads) {
@@ -907,10 +921,17 @@ async function refreshGmail(toTriage) {
       saveItem(id, { unread: base.unread });
     }
   }
-  // Open emails no longer in the search: answered elsewhere, archived, or older than the window.
-  const stale = [...S.items.values()].filter((it) => it.source === "email" && it.kind !== "awaiting" && it.status === "open" && !seen.has(it.id)).slice(0, 25);
-  await pool(stale, 4, async (it) => {
-    const full = await fullThread(it.ref, "MINIMAL");
+  // Open emails the search didn't return: answered elsewhere, archived,
+  // deleted, or just older than the last-24-hours window. One search lists
+  // what's still in the inbox; everything else is checked now, as it is in
+  // Gmail rather than from a cache, so clearing the inbox clears the page.
+  const open = [...S.items.values()].filter((it) => it.source === "email" && it.kind !== "awaiting" && it.status === "open" && !seen.has(it.id));
+  if (!open.length) return;
+  const inbox = await inboxThreadIds(1000).catch(() => null);
+  const gone = inbox && inbox.complete ? open.filter((it) => !inbox.ids.has(it.ref))
+    : open.filter((it) => !(inbox && inbox.ids.has(it.ref))).slice(0, 60);
+  await pool(gone, 4, async (it) => {
+    const full = await fullThread(it.ref, "MINIMAL", true);
     const last = latestOf(full && full.messages);
     if (!last) return;
     const labels = last.labelIds || [];

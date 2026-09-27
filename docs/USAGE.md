@@ -120,6 +120,11 @@ Every email still waiting on you, sorted by Claude into:
 Each group folds (Show / Hide), and remembers how you left it. The filter
 chips **All · Unread · Call-backs · Work** narrow the list further.
 
+The list follows your Gmail inbox. Emails you reply to, archive or delete in
+Gmail itself leave the Day Sheet at the next refresh, and move to
+**Handled**. **Waiting on others** is different: it comes from mail you
+sent, so an empty inbox doesn't clear it.
+
 ### Start of the week
 
 On the first day of your week (Monday unless you change it in Settings), a
