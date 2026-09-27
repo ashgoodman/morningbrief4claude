@@ -40,7 +40,7 @@ that don't matter.
 ## 1. Install
 
 1. In Claude, open **Customize → Plugins**.
-2. Choose **Upload** and pick **mb4c-plugin-0.4.2.zip**.
+2. Choose **Upload** and pick **mb4c-plugin-0.5.0.zip**.
 3. Start a new task (or chat) and type **/mb4c:setup**.
 
 Claude then walks you through three steps:
@@ -89,8 +89,8 @@ Tick these off as you go. Anything that surprises you is worth reporting.
 - [ ] **Book time** on an email marked Work. It suggests the first free slot
       in your working hours. Add it and check the event is in your calendar.
 - [ ] **Plan my day**. It lays out your Work emails and call-backs in free
-      time. Untick what you don't want, add the rest, and check your
-      calendar.
+      time. Change a length, swap two items with ↑ ↓, untick one, then add
+      the rest and check your calendar.
 - [ ] If you have unanswered invitations, **Accept / Maybe / Decline**. This
       tells the organiser.
 

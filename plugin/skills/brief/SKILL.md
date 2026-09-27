@@ -155,9 +155,10 @@ Skip this step if `--no-blocks` was given or nothing is tagged **Work** or
 Present the proposals as a numbered list: time, title, what it covers. Then
 ask: "Want me to add these to your calendar? You can say all, some numbers,
 or none." Only after a yes, create each confirmed block on the primary
-calendar as a busy event titled with a leading `MB4C: ` (for example
-`MB4C: Draft Acme quote`), with the related email subjects
-in the description. Use the calendar's focus-time event type if the tool
+calendar as a busy event with a plain title (for example
+`Draft Acme quote`). Start its description with the line
+`Added to your calendar by MB4C (Morning Brief for Claude).`, then a blank
+line and the related email subjects. Use the calendar's focus-time event type if the tool
 offers it and the user has a Google Workspace account; otherwise a normal
 event.
 

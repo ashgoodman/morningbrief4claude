@@ -49,7 +49,7 @@ them from Gmail.
 
 In Claude, **Customize → Plugins**, then either:
 
-- **Upload** `dist/mb4c-plugin-0.4.2.zip`; or
+- **Upload** `dist/mb4c-plugin-0.5.0.zip`; or
 - **Add marketplace**, enter `ashgoodman/morningbrief4claude`, and install
   **Morning Brief for Claude** (needs this repository to be readable by the
   person installing it).
@@ -81,7 +81,7 @@ Built and checked:
   quoted-printable parts.
 - Its free-time finder, day planner and start-of-week date are tested.
 - The Day Sheet is running on the author's own account against real Gmail
-  and calendars.
+  and calendars, and Plan my day has booked a real block there.
 
 Not yet verified:
 
