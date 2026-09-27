@@ -321,9 +321,15 @@ same on every device you open the Day Sheet on.
 
 ### Further down the page
 
-- **Waiting on others**: mail you sent 2 to 21 days ago with no answer, each
-  with a one-line summary of what you asked for. ⋯ → **Nudge them** drafts a
-  follow-up; **Show what you sent** shows your message.
+- **Waiting on others**: mail you sent 2 to 21 days ago that asks for
+  something and hasn't had an answer, each with a one-line summary of what
+  you asked for. ⋯ → **Nudge them** drafts a follow-up; **Show what you
+  sent** shows your message.
+  - Emails sent only to yourself are left out.
+  - Claude reads each one and leaves out emails that don't need an answer,
+    such as sharing a link or a file, saying thanks, or confirming
+    something. They go to **Handled** as "Not waiting on a reply". If Claude
+    got one wrong, select **Undo** and it comes back.
 - **Reminders later**: items you've hidden, with the day they come back.
 - **Delegated**: with their check-back dates.
 - **Noise and likely spam**: with one-tap Spam and Delete.
