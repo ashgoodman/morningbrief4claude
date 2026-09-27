@@ -15,11 +15,22 @@ plugin, setting it up, and everything on the Day Sheet.
 
 ## Install
 
+**From a zip file** you were given:
+
 1. In Claude, open **Customize → Plugins**.
-2. Choose **Upload** and pick the `mb4c-plugin-<version>.zip` file you were
-   given. (Or, if you were given the GitHub address: **Add marketplace**, enter
-   `ashgoodman/morningbrief4claude`, and install **Morning Brief for Claude**.)
-3. Start a new task and type `/mb4c:setup`.
+2. Select **Add → Upload plugin** and choose the `mb4c-plugin-<version>.zip`
+   file.
+3. Start a new conversation and type `/mb4c:setup`.
+
+**From the GitHub repository:**
+
+1. Open **Customize → Plugins** and select **Add → Add marketplace**.
+2. Enter `ashgoodman/morningbrief4claude`.
+3. If the repository is private, Claude asks you to connect GitHub and give
+   the Claude GitHub App access to it. Your GitHub account must be able to
+   see the repository.
+4. Select **Morning Brief for Claude**, then **Add**.
+5. Start a new conversation and type `/mb4c:setup`.
 
 ## Setup (`/mb4c:setup`)
 
@@ -132,7 +143,7 @@ Buttons you can tap straight from the card:
 
 | Button | What it does |
 |---|---|
-| **Draft a quick reply →** / **Draft a reply →** | Opens the item with Claude already writing a reply. Edit it, then **Save to Gmail Drafts**. Nothing is sent; you send it from Gmail. |
+| **Draft a quick reply →** / **Draft a reply →** | Opens the item with Claude already writing a reply. Edit it, then **Save to Gmail Drafts**. It isn't sent until you send it from **Drafts** or Gmail. |
 | **Book time →** | Opens the item with the booking fields ready: your next working day, and the first free gap in your working hours from that day's calendar. Change the day and it finds a gap on that day. **Add to calendar** books the block, with a note in its description that MB4C added it. |
 | **Call +63…** | Starts a phone call on a phone. |
 | **WhatsApp** | Opens a WhatsApp chat with that number. Shown only when the email says the number is on WhatsApp. |
@@ -187,6 +198,53 @@ options open under the email and above the action buttons.
 - **Delegated**, and **Remove** (hides it from the schedule).
 - **Open in Google Calendar** and **Join Google Meet**.
 
+### New event
+
+**+ Event** beside the schedule adds an event of your own, such as a
+doctor's appointment. Fill in:
+
+- what it is, and the day (it starts on the day you're looking at);
+- a start time and length, or **All day**;
+- where, and notes, if you like;
+- which calendar, if you have more than one you can add to;
+- a reminder: your calendar's usual reminders, none, or 10 minutes, 30
+  minutes, 1 hour or 1 day before.
+
+It's added as an ordinary event, not an MB4C block, and no one is invited.
+
+### New email
+
+**+ Email** beside Needs you starts a new email. Fill in To (and Cc or Bcc if
+you need them), a subject and the message. To have Claude write it, type
+what it should say, such as "ask Dr Reyes to move Wednesday's appointment to
+Friday", and select **Write it for me**. Edit the result, then **Save to
+Gmail Drafts**. It isn't sent until you send it.
+
+### Drafts
+
+The envelope at the top opens **Drafts**: your Gmail drafts, newest first,
+including replies drafted from the Day Sheet. Each has:
+
+- **Send…**, which shows the From address and the recipients and asks you
+  to confirm before it sends. A sent email can't be unsent from here.
+- **Open in Gmail**, to edit it. Edit drafts in Gmail, where their
+  attachments are kept.
+- **Delete…**, which asks first.
+
+A draft with no recipient can't be sent until you add one in Gmail.
+
+**Which address it's sent from:** the Gmail tools Claude uses have no way to
+choose a From address. A draft goes from the address saved on it. Drafts
+the Day Sheet creates get the address Gmail chooses. If you have several
+"Send mail as" addresses, open the draft in Gmail, pick the From address
+there, and then send it from Drafts or Gmail.
+
+For replies, the Day Sheet checks for you. After it saves a reply draft, it
+reads back the From address Gmail chose and compares it with the address
+the email was sent to. If they're different, it says so, such as "It will
+be sent from you@main.com, but the email was sent to sales@yourshop.com",
+so you can change From in Gmail before sending.
+
 ### Swipes (touch screens)
 
 - **Swipe right**: Done.
@@ -211,6 +269,9 @@ Needs you, and the selected one is outlined.
 | **←** / **→** | Previous / next day |
 | **t** | Back to today |
 | **p** | Plan the day you're looking at |
+| **n** | New event |
+| **c** | New email |
+| **d** | Drafts |
 | **,** | Settings |
 | **Esc** | Close |
 
@@ -285,8 +346,10 @@ same on every device you open the Day Sheet on.
   Day Sheet's own private storage and follows you across devices.
 - Email text is sent to Claude only to sort it, summarise it and draft
   replies, using your own Claude account.
-- Nothing is sent, and nothing is archived, deleted, filed or booked, without
-  your tap, except what your own sender rules say to do.
+- An email is sent only when you choose **Send** on the Drafts screen and
+  confirm, or send it from Gmail yourself. Nothing is archived, deleted,
+  filed or booked without your tap, except what your own sender rules say to
+  do.
 
 ## If something isn't working
 

@@ -21,6 +21,11 @@ Google Calendar through Claude's connectors.
   is on WhatsApp.
 - **Waiting on others**: mail you sent that hasn't had an answer, summarised,
   with a nudge draft.
+- **New email and New event**: write an email yourself or have Claude write
+  it from a note, saved to Gmail Drafts; add your own calendar events, such
+  as appointments.
+- **Drafts**: your Gmail drafts in one list, each with Send (after you
+  confirm), Open in Gmail and Delete.
 - **Inbox zero**: switch from "last 24 hours" to the whole inbox, and have
   handled email archived in Gmail automatically.
 - **Start of the week**: on the first day of your week, what's been waiting
@@ -31,9 +36,10 @@ Google Calendar through Claude's connectors.
   email stays listed, and sender rules; **keyboard shortcuts** on a
   computer.
 
-Nothing is sent, and nothing is archived, deleted, filed or booked without a
-tap, except what your own sender rules say to do. Replies are drafts; you send
-them from Gmail.
+Replies are saved as Gmail drafts. An email is sent only when you choose
+**Send** on the Drafts screen and confirm, or send it from Gmail yourself.
+Nothing is archived, deleted, filed or booked without a tap, except what your
+own sender rules say to do.
 
 **How to use it:** see [docs/USAGE.md](docs/USAGE.md).
 
@@ -47,16 +53,49 @@ them from Gmail.
 
 ## Install
 
-In Claude, **Customize → Plugins**, then either:
+There are two ways to add MB4C to Claude. Both take a minute, and both end
+the same way: start a new conversation and type `/mb4c:setup`.
 
-- **Upload** `dist/mb4c-plugin-0.5.0.zip`; or
-- **Add marketplace**, enter `ashgoodman/morningbrief4claude`, and install
-  **Morning Brief for Claude** (needs this repository to be readable by the
-  person installing it).
+### From this GitHub repository
 
-Then run `/mb4c:setup` in a new task. It connects Gmail and Calendar, publishes
-your own Day Sheet with `/mb4c:dashboard`, and offers to schedule the text
-brief.
+You don't need to be listed anywhere for this. The repository is a plugin
+marketplace in its own right (that's what `.claude-plugin/marketplace.json`
+does), and anyone can add it to their Claude:
+
+1. In Claude on the web or the desktop app, open **Customize → Plugins**.
+2. Select **Add → Add marketplace**.
+3. Enter `ashgoodman/morningbrief4claude` (or the full GitHub address).
+4. **While this repository is private:** Claude asks you to connect your
+   GitHub account and give the Claude GitHub App access to the repository.
+   Your GitHub account has to be able to see it, so the owner needs to add
+   you as a collaborator first. Once the repository is public, this step
+   goes away.
+5. **Morning Brief for Claude** now appears with your other plugins. Select
+   it, then select **Add**.
+6. Start a new conversation and type `/mb4c:setup`.
+
+Plugins added from a marketplace update from their source automatically, so
+you get new versions when they're released here.
+
+### From the zip file
+
+If someone sent you `mb4c-plugin-<version>.zip` (it's also in `dist/`):
+
+1. Open **Customize → Plugins** and select **Add → Upload plugin**.
+2. Choose the zip file.
+3. Start a new conversation and type `/mb4c:setup`.
+
+To update, upload the newer zip the same way, then type `/mb4c:dashboard`
+to update your Day Sheet. It keeps your settings and link.
+
+### What setup does
+
+`/mb4c:setup` walks you through these steps:
+
+1. Connecting Gmail and Google Calendar.
+2. Publishing your own private Day Sheet with `/mb4c:dashboard`.
+3. Running the text brief once.
+4. Scheduling the text brief every morning, if you want it.
 
 A public GitHub issue reports marketplace-installed plugins failing to load
 their skills in Cowork while the same plugin uploaded as a zip works
@@ -100,6 +139,8 @@ Not yet verified:
 | Path | What it is |
 |---|---|
 | `plugin/` | The plugin (this folder is what the zip contains) |
+| `plugin/README.md` | The plugin's own README: its directory listing, and what it reads, sends and fetches |
+| `LICENSE`, `plugin/LICENSE` | MIT licence |
 | `plugin/.claude-plugin/plugin.json` | Plugin manifest |
 | `plugin/skills/setup/` | `/mb4c:setup` |
 | `plugin/skills/dashboard/` | `/mb4c:dashboard` and `day-sheet.html`, the Day Sheet page |
@@ -108,6 +149,7 @@ Not yet verified:
 | `dist/` | Built plugin zip, and the tester and user guides as PDFs |
 | `docs/USAGE.md` | User guide |
 | `docs/TESTING.md` | Guide for testers: install, what to try, how to report |
+| `docs/DIRECTORY.md` | Listing MB4C in the Claude directory: checklist status and steps |
 | `scripts/build-zip.sh` | Builds the zip |
 | `test/` | Day Sheet checks |
 
@@ -121,6 +163,10 @@ scripts/build-zip.sh                     # writes dist/mb4c-plugin-<version>.zip
 
 After changing `day-sheet.html`, rebuild the zip, and re-run `/mb4c:dashboard`
 to update your own Day Sheet.
+
+## Licence
+
+MIT: see [LICENSE](LICENSE).
 
 ## Credits
 

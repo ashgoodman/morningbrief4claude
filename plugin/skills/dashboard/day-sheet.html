@@ -215,6 +215,12 @@ textarea{width:100%;min-height:160px;border:1px solid var(--line);border-radius:
 .rules li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 12px;background:var(--surface);border:1px solid var(--line);border-radius:10px;font-size:0.875rem;overflow-wrap:anywhere}
 .check{display:flex;gap:10px;align-items:flex-start;font-size:0.875rem;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--ground);margin-bottom:12px}
 .check input{margin-top:3px;width:18px;height:18px;flex:none}
+/* drafts */
+.drafts{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.drafts li{display:grid;gap:6px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--ground);overflow-wrap:anywhere}
+.drafts .to{font-weight:600}
+.drafts .snip{font-size:0.875rem;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.confirm{display:grid;gap:8px;padding:10px 12px;border:1px solid var(--p2);border-radius:10px;background:var(--p2-soft)}
 /* v4: settings, plan, week reset, keyboard */
 .item.cursor{outline:2px solid var(--accent);outline-offset:2px}
 #list .item{scroll-margin:180px 0 24px}
@@ -267,6 +273,7 @@ kbd{display:inline-block;min-width:1.75rem;text-align:center;font:500 0.75rem/1.
       </div>
       <div class="refresh">
         <div class="topbtns">
+          <button class="iconbtn" id="draftsBtn" type="button" aria-label="Drafts" title="Drafts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4z"/><path d="m4 7 8 6 8-6"/></svg></button>
           <button class="iconbtn" id="settingsBtn" type="button" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
           <button class="iconbtn primary" id="refreshBtn" type="button" aria-label="Refresh" title="Refresh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg></button>
         </div>
@@ -280,14 +287,14 @@ kbd{display:inline-block;min-width:1.75rem;text-align:center;font:500 0.75rem/1.
 
   <main>
     <section class="schedule" id="schedSec" aria-labelledby="schedH">
-      <div class="sechead"><h2 id="schedH">Today's schedule</h2><span class="count" id="schedCount"></span><button class="chip" id="planBtn" type="button" hidden>Plan my day</button></div>
+      <div class="sechead"><h2 id="schedH">Today's schedule</h2><span class="count" id="schedCount"></span><span class="row" style="gap:6px"><button class="chip" id="newEvBtn" type="button">+ Event</button><button class="chip" id="planBtn" type="button" hidden>Plan my day</button></span></div>
       <div id="schedule"><div class="note">Loading your calendar…</div></div>
       <div id="dueback"></div>
       <div id="invites"></div>
     </section>
 
     <section id="needSec" aria-labelledby="needH">
-      <div class="sechead"><h2 id="needH">Needs you</h2><span class="count" id="needCount"></span></div>
+      <div class="sechead"><h2 id="needH">Needs you</h2><span class="count" id="needCount"></span><button class="chip" id="newMailBtn" type="button">+ Email</button></div>
       <div id="reset"></div>
       <div class="filters" id="filters" role="group" aria-label="Show"></div>
       <p class="swipehint" id="swipehint" hidden>On a touch screen, swipe right for done, left to see it again tomorrow.</p>
@@ -636,7 +643,7 @@ async function calendarsToRead() {
   if (!S.calendars) {
     try {
       const p = await call(CAL, "list_calendars", {}, { cache: { staleTime: 300000 } });
-      S.calendars = ((p && p.calendars) || []).map((c) => ({ id: c.id, summary: c.summary || c.id, primary: !!c.primary }));
+      S.calendars = ((p && p.calendars) || []).map((c) => ({ id: c.id, summary: c.summary || c.id, primary: !!c.primary, role: c.accessRole || null }));
     } catch (e) { S.calendars = []; }
   }
   const hidden = new Set(S.profile.hiddenCalendars || []);
@@ -1928,8 +1935,11 @@ function draftPanel(it) {
       const subj = /^re:/i.test(it.subject || "") ? it.subject : "Re: " + (it.subject || "");
       const p = await call(GMAIL, "create_draft", { to: it.fromAddr ? [it.fromAddr] : undefined, subject: subj, body: ta.value, replyToMessageId: it.lastMsgId });
       S.sheet.working = false;
-      S.sheet.draft = { ...d, text: ta.value, saved: (p && p.viewUrl) || true };
+      const sh = S.sheet;
+      sh.draft = { ...d, text: ta.value, saved: (p && p.viewUrl) || true, from: null };
       renderSheet(); toast("Saved to Gmail Drafts. It hasn't been sent.");
+      // Gmail chooses the From address; check it against where the email was sent.
+      if (!d.nudge && p && p.id) replyFrom(it, p.id).then((f) => { if (f && S.sheet === sh && sh.draft) { sh.draft.from = f; renderSheet(); } });
     } catch (e) { sheetError(e, GMAIL); }
   } }, d.saved ? "Saved ✓ Save again" : "Save to Gmail Drafts"));
   if (d.saved && typeof d.saved === "string") buttons.push(...appLinks("gmail", d.saved));
@@ -1937,7 +1947,8 @@ function draftPanel(it) {
   return h("div", { class: "panel" },
     d.error ? h("div", { class: "note bad" }, d.error) : null,
     ta,
-    h("div", { class: "meta" }, "Saved as a draft reply in Gmail. Nothing is sent."),
+    h("div", { class: "meta" }, "Saved as a draft reply in Gmail. It isn't sent until you send it from Drafts or Gmail."),
+    d.from ? h("div", { class: d.from.warn ? "warn" : "meta", role: "status" }, d.from.text) : null,
     h("div", { class: "row" }, buttons));
 }
 
@@ -2146,12 +2157,271 @@ async function openPlan(day, anyway) {
 const PLAN_LENGTHS = [10, 15, 20, 30, 45, 60, 90, 120, 150, 180];
 function fmtLen(m) { return m < 60 ? `${m} min` : m % 60 ? `${Math.floor(m / 60)} h ${m % 60} min` : `${m / 60} h`; }
 
+// ------------------------------------------------------------- new event
+// An event of your own, not from an email: an appointment, a call, a trip.
+// It's an ordinary event, not an MB4C block, so it carries no MB4C note.
+const EVENT_LENGTHS = [15, 30, 45, 60, 90, 120, 180, 240, 480];
+const EVENT_REMINDERS = [["default", "My calendar's usual reminders"], ["none", "No reminder"], ["10", "10 minutes before"], ["30", "30 minutes before"], ["60", "1 hour before"], ["1440", "1 day before"]];
+async function openNewEvent(day) {
+  const sh = S.sheet = { kind: "newevent" };
+  await calendarsToRead();
+  if (S.sheet !== sh) return;
+  const cals = (S.calendars || []).filter((c) => !c.role || c.role === "owner" || c.role === "writer");
+  const start = day && day >= localDay() ? day : localDay();
+  const now = new Date(); now.setMinutes(Math.ceil(now.getMinutes() / 30) * 30, 0, 0);
+  const title = h("input", { id: "neTitle", type: "text", maxlength: "200", placeholder: "Doctor's appointment", autocomplete: "off" });
+  const d = h("input", { id: "neDay", type: "date", value: start });
+  const allDay = h("input", { id: "neAllDay", type: "checkbox" });
+  const t = h("input", { id: "neTime", type: "time", step: "300", value: start === localDay() && now.getHours() >= 9 ? now.toTimeString().slice(0, 5) : "09:00" });
+  const len = h("select", { id: "neLen" }, EVENT_LENGTHS.map((m) => h("option", { value: String(m), selected: m === 60 }, fmtLen(m))));
+  const where = h("input", { id: "neWhere", type: "text", maxlength: "200", placeholder: "Optional", autocomplete: "off" });
+  const notes = h("textarea", { id: "neNotes", "aria-label": "Notes", placeholder: "Optional notes", style: "min-height:80px" });
+  const cal = h("select", { id: "neCal" }, (cals.length ? cals : [{ id: "primary", summary: "My calendar", primary: true }])
+    .map((c) => h("option", { value: c.id, selected: c.primary }, c.primary ? c.summary + " (main)" : c.summary)));
+  const rem = h("select", { id: "neRem" }, EVENT_REMINDERS.map(([v, text]) => h("option", { value: v }, text)));
+  const timeRow = h("div", { class: "row" },
+    h("label", { class: "field", for: "neTime", style: "flex:1;min-width:120px" }, "Starts", t),
+    h("label", { class: "field", for: "neLen", style: "flex:1;min-width:120px" }, "Length", len));
+  allDay.addEventListener("change", () => { timeRow.hidden = allDay.checked; });
+  const msg = h("div", { role: "status" });
+  const add = h("button", { class: "btn primary", type: "submit" }, "Add to calendar");
+  const form = h("form", { style: "display:grid;gap:12px" },
+    h("label", { class: "field", for: "neTitle" }, "What", title),
+    h("div", { class: "row" },
+      h("label", { class: "field", for: "neDay", style: "flex:1;min-width:150px" }, "Day", d),
+      h("label", { class: "inline", for: "neAllDay", style: "align-self:end;min-height:44px" }, allDay, "All day")),
+    timeRow,
+    h("label", { class: "field", for: "neWhere" }, "Where", where),
+    notes,
+    h("div", { class: "row" },
+      cals.length > 1 ? h("label", { class: "field", for: "neCal", style: "flex:1;min-width:160px" }, "Calendar", cal) : null,
+      h("label", { class: "field", for: "neRem", style: "flex:1;min-width:160px" }, "Reminder", rem)),
+    msg, h("div", { class: "row" }, add));
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const what = title.value.trim();
+    if (!what) { msg.replaceChildren(h("div", { class: "note bad" }, "Give the event a name.")); title.focus(); return; }
+    if (!d.value || (!allDay.checked && !t.value)) { msg.replaceChildren(h("div", { class: "note bad" }, "Pick a day" + (allDay.checked ? "." : " and a start time."))); return; }
+    const input = { summary: what, timeZone: tz };
+    if (allDay.checked) {
+      input.allDay = true; input.startTime = dayStart(d.value).toISOString(); input.endTime = dayStart(addDays(d.value, 1)).toISOString();
+    } else {
+      const [hh, mm] = t.value.split(":").map(Number);
+      const s0 = dayStart(d.value); s0.setHours(hh, mm, 0, 0);
+      input.startTime = s0.toISOString(); input.endTime = new Date(s0.getTime() + Number(len.value) * 60000).toISOString();
+    }
+    if (where.value.trim()) input.location = where.value.trim();
+    if (notes.value.trim()) input.description = notes.value.trim();
+    if (cal.value && cal.value !== "primary" && !(cals.find((c) => c.id === cal.value) || {}).primary) input.calendarId = cal.value;
+    if (rem.value === "default") input.useDefaultReminders = true;
+    else if (rem.value === "none") input.useDefaultReminders = false;
+    else input.overrideReminders = [{ method: "popup", minutes: Number(rem.value) }];
+    add.disabled = true; add.textContent = "Adding…"; msg.replaceChildren();
+    try {
+      await call(CAL, "create_event", input);
+      await S.mcp.invalidate(CAL).catch(() => {});
+      if (S.sheet === sh) closeSheet();
+      toast(`Added ${what} ${onDay(d.value)}`);
+      if (d.value !== S.day) setDay(d.value);
+      loadDay(d.value, true);
+    } catch (err) {
+      add.disabled = false; add.textContent = "Add to calendar";
+      msg.replaceChildren(h("div", { class: "note bad" }, connectorMessage(CAL, err)));
+    }
+  });
+  sheetShell("New event", "Adds an event to your Google Calendar. Nothing is sent to anyone.", form);
+  title.focus();
+}
+
+// ------------------------------------------------------------- new email
+// A new email of your own, saved to Gmail Drafts; it goes only when the
+// viewer sends it from Drafts or Gmail. Claude can write it from a short note.
+function parseAddresses(text) {
+  const out = [], bad = [];
+  for (const part of String(text || "").split(/[,;\n]+/)) {
+    const raw = part.trim(); if (!raw) continue;
+    const m = raw.match(/<([^>]+)>/); const addr = (m ? m[1] : raw).trim();
+    if (/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(addr)) out.push(addr); else bad.push(raw);
+  }
+  return { out, bad };
+}
+function openNewEmail() {
+  const sh = S.sheet = { kind: "newmail" };
+  const to = h("input", { id: "nmTo", type: "text", inputmode: "email", autocomplete: "off", placeholder: "name@example.com" });
+  const cc = h("input", { id: "nmCc", type: "text", inputmode: "email", autocomplete: "off", placeholder: "Optional" });
+  const bcc = h("input", { id: "nmBcc", type: "text", inputmode: "email", autocomplete: "off", placeholder: "Optional" });
+  const subj = h("input", { id: "nmSubj", type: "text", maxlength: "250", autocomplete: "off" });
+  const body = h("textarea", { id: "nmBody", "aria-label": "Message" });
+  const ask = h("input", { id: "nmAsk", type: "text", maxlength: "500", autocomplete: "off", placeholder: "e.g. ask Dr Reyes to move Wednesday's appointment to Friday" });
+  const msg = h("div", { role: "status" });
+  const write = h("button", { class: "btn", type: "button" }, "Write it for me");
+  const save = h("button", { class: "btn primary", type: "submit" }, "Save to Gmail Drafts");
+  const links = h("span", { class: "row" });
+  const note = (text, bad) => msg.replaceChildren(text ? h("div", { class: "note" + (bad ? " bad" : "") }, text) : "");
+  write.addEventListener("click", async () => {
+    if (!S.sample) { note("Claude isn't available on this page, so it can't write a draft. Write it yourself below.", true); return; }
+    const what = ask.value.trim();
+    if (!what) { note("Say in a few words what the email should say.", true); ask.focus(); return; }
+    const name = (S.me && S.me.name) ? S.me.name.split(" ")[0] : "";
+    write.disabled = true; write.textContent = "Writing…"; note("");
+    try {
+      const out = await S.sample.json(`Write a new email for the user from their note below.
+Keep it brief and friendly unless the note asks otherwise. Plain text, no Markdown${name ? `, sign off as ${name}` : ", no signature"}.
+Never invent facts, prices, dates or promises the note doesn't give. Where the user must fill something in, write it in [square brackets].
+Recipients: ${to.value.trim() || "(not given)"}
+Subject they typed: ${subj.value.trim() || "(none: suggest one)"}
+Their note: ${what}
+Reply with only JSON: {"subject": string, "body": string}`, { cache: false });
+      if (S.sheet !== sh) return;
+      if (out && out.body) { body.value = String(out.body); if (!subj.value.trim() && out.subject) subj.value = String(out.subject).slice(0, 250); }
+      else note("Claude didn't return a draft. Try again, or write it yourself.", true);
+    } catch (e) {
+      if (S.sheet === sh) note(e && e.code === "rate_limited" ? "Claude is busy or your usage limit is reached. Try again later." : "Claude couldn't write a draft this time.", true);
+    }
+    write.disabled = false; write.textContent = "Write it again";
+  });
+  ask.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); write.click(); } });
+  const form = h("form", { style: "display:grid;gap:12px" },
+    h("label", { class: "field", for: "nmTo" }, "To", to),
+    h("div", { class: "row" },
+      h("label", { class: "field", for: "nmCc", style: "flex:1;min-width:160px" }, "Cc", cc),
+      h("label", { class: "field", for: "nmBcc", style: "flex:1;min-width:160px" }, "Bcc", bcc)),
+    h("label", { class: "field", for: "nmSubj" }, "Subject", subj),
+    h("div", { class: "panel", style: "margin:0;padding:12px;border:1px dashed var(--line);border-radius:10px" },
+      h("label", { class: "field", for: "nmAsk" }, "Have Claude write it: what should it say?", ask),
+      h("div", { class: "row" }, write)),
+    body,
+    h("div", { class: "meta", style: "margin:0" }, "Saved as a draft in Gmail. Nothing is sent until you send it from Drafts or Gmail."),
+    msg, h("div", { class: "row" }, save, links));
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const T = parseAddresses(to.value), C = parseAddresses(cc.value), B = parseAddresses(bcc.value);
+    const bad = [...T.bad, ...C.bad, ...B.bad];
+    if (bad.length) { note(`These don't look like email addresses: ${bad.join(", ")}`, true); return; }
+    if (!body.value.trim() && !subj.value.trim()) { note("Write a subject or a message first.", true); return; }
+    save.disabled = true; save.textContent = "Saving…"; note("");
+    try {
+      const d = await call(GMAIL, "create_draft", {
+        ...(T.out.length ? { to: T.out } : {}), ...(C.out.length ? { cc: C.out } : {}), ...(B.out.length ? { bcc: B.out } : {}),
+        subject: subj.value.trim(), body: body.value,
+      });
+      save.textContent = "Saved ✓ Save again"; save.disabled = false;
+      links.replaceChildren(...(d && d.viewUrl ? appLinks("gmail", d.viewUrl) : []));
+      note(T.out.length ? "Saved to Gmail Drafts. Send it from Drafts (the envelope at the top) or from Gmail." : "Saved to Gmail Drafts with no recipient yet. Add one in Gmail before sending.");
+      toast("Saved to Gmail Drafts. It hasn't been sent.");
+    } catch (err) {
+      save.disabled = false; save.textContent = "Save to Gmail Drafts";
+      note(connectorMessage(GMAIL, err), true);
+    }
+  });
+  sheetShell("New email", "Write it yourself, or tell Claude what to say.", form);
+  to.focus();
+}
+
+// The Gmail tools have no From field, so Gmail picks the address for a reply
+// draft. This reads it back and compares it with the addresses the email was
+// sent to, so a reply from the wrong address is caught before it's sent.
+async function replyFrom(it, draftId) {
+  try {
+    const [dr, full] = await Promise.all([
+      call(GMAIL, "get_draft", { draftId, messageFormat: "MINIMAL" }, { cache: false }),
+      fullThread(it.ref, "MINIMAL")]);
+    const from = senderAddr(dField(dr, "sender", "from") || "");
+    const msgs = (full && full.messages) || [];
+    const m = msgs.find((x) => x.id === it.lastMsgId) || latestOf(msgs) || {};
+    const to = [...[].concat(m.toRecipients || m.to_recipients || []), ...[].concat(m.ccRecipients || m.cc_recipients || [])].map(senderAddr).filter(Boolean);
+    if (!from) return null;
+    if (!to.length || to.includes(from)) return { text: `It will be sent from ${from}.`, warn: false };
+    return { text: `It will be sent from ${from}, but the email was sent to ${to.join(", ")}. To reply from that address, open the draft in Gmail and change From before sending.`, warn: true };
+  } catch (e) { return null; }
+}
+
+// ---------------------------------------------------------------- drafts
+// Your Gmail drafts, with Send. Sending always asks first, and sends the
+// draft exactly as it's saved in Gmail, attachments and thread included.
+const dField = (d, ...names) => { for (const src of [d, d && d.message]) for (const n of names) if (src && src[n] !== undefined && src[n] !== null) return src[n]; return undefined; };
+async function openDrafts() {
+  const sh = S.sheet = { kind: "drafts" };
+  const list = h("ul", { class: "drafts" });
+  const status = h("div", { role: "status" }, h("div", { class: "note" }, "Loading your drafts…"));
+  const draw = (drafts) => {
+    status.replaceChildren(drafts.length ? "" : h("div", { class: "note" }, "No drafts in Gmail."));
+    list.replaceChildren(...drafts.map((d) => {
+      const id = d.id || dField(d, "draftId");
+      const to = [].concat(dField(d, "toRecipients", "to_recipients") || []);
+      const cc = [].concat(dField(d, "ccRecipients", "cc_recipients") || []);
+      const bcc = [].concat(dField(d, "bccRecipients", "bcc_recipients") || []);
+      const subject = decode(dField(d, "subject") || "(no subject)");
+      const body = String(dField(d, "plaintextBody", "plaintext_body", "snippet") || "").trim();
+      const url = dField(d, "viewUrl", "view_url");
+      const when = dField(d, "date");
+      const everyone = [...to, ...cc, ...bcc];
+      const li = h("li", {});
+      const actions = h("div", { class: "row" });
+      const normal = () => actions.replaceChildren(
+        h("button", { class: "btn primary", type: "button", disabled: !everyone.length, title: everyone.length ? "" : "Add a recipient in Gmail first", onclick: askSend }, "Send…"),
+        ...(url ? appLinks("gmail", url) : []),
+        h("button", { class: "btn danger", type: "button", onclick: askDelete }, "Delete…"));
+      // The connector's send has no From field: a draft goes from the address
+      // saved on it (change it in Gmail). The confirm step shows that address.
+      function askSend() {
+        const from = h("b", {}, "checking…");
+        call(GMAIL, "get_draft", { draftId: id, messageFormat: "MINIMAL" }, { cache: false })
+          .then((full) => { const f = dField(full, "sender", "from"); from.textContent = f ? String(f) : "your Gmail default address"; })
+          .catch(() => { from.textContent = "your Gmail default address (couldn't check)"; });
+        actions.replaceChildren(h("div", { class: "confirm", role: "alertdialog", "aria-label": "Confirm sending" },
+          h("div", {}, "From ", from),
+          h("div", {}, "Send this email now to ", h("b", {}, everyone.join(", ")), "? You can't unsend it from here. To send from a different address, open it in Gmail and change From first."),
+          h("div", { class: "row" },
+            h("button", { class: "btn primary", type: "button", onclick: async (e) => {
+              e.currentTarget.disabled = true; e.currentTarget.textContent = "Sending…";
+              try { await call(GMAIL, "send_message", { draftId: id }); toast("Sent to " + everyone.join(", ")); li.remove(); if (!list.children.length) draw([]); }
+              catch (err) { normal(); status.replaceChildren(h("div", { class: "note bad" }, connectorMessage(GMAIL, err))); }
+            } }, "Send now"),
+            h("button", { class: "btn", type: "button", onclick: normal }, "Cancel"))));
+        actions.querySelector("button").focus();
+      }
+      function askDelete() {
+        actions.replaceChildren(h("div", { class: "confirm", role: "alertdialog", "aria-label": "Confirm deleting" },
+          h("div", {}, "Delete this draft from Gmail?"),
+          h("div", { class: "row" },
+            h("button", { class: "btn danger", type: "button", onclick: async (e) => {
+              e.currentTarget.disabled = true;
+              try { await call(GMAIL, "delete_draft", { draftId: id }); toast("Draft deleted"); li.remove(); if (!list.children.length) draw([]); }
+              catch (err) { normal(); status.replaceChildren(h("div", { class: "note bad" }, connectorMessage(GMAIL, err))); }
+            } }, "Delete"),
+            h("button", { class: "btn", type: "button", onclick: normal }, "Cancel"))));
+      }
+      normal();
+      li.append(
+        h("div", { class: "row", style: "justify-content:space-between" },
+          h("span", { class: "to" }, everyone.length ? "To " + to.concat(cc).join(", ") + (bcc.length ? ` (+${bcc.length} Bcc)` : "") : "No recipient yet"),
+          when ? h("span", { class: "age" }, age(Date.parse(when) || Number(when))) : null),
+        h("div", {}, subject),
+        body ? h("div", { class: "snip" }, body) : null,
+        actions);
+      return li;
+    }));
+  };
+  sheetShell("Drafts", "Your Gmail drafts, newest first. Send asks you to confirm; to edit one, open it in Gmail.",
+    h("div", { style: "display:grid;gap:12px" },
+      h("div", { class: "row" }, h("button", { class: "btn", type: "button", onclick: () => { closeSheet(); openNewEmail(); } }, "+ New email")),
+      status, list));
+  try {
+    const p = await call(GMAIL, "list_drafts", { pageSize: 50, view: "DRAFT_VIEW_FULL" }, { cache: false });
+    if (S.sheet !== sh) return;
+    draw((p && p.drafts) || []);
+  } catch (e) {
+    if (S.sheet === sh) status.replaceChildren(h("div", { class: "note bad" }, connectorMessage(GMAIL, e)));
+  }
+}
+
 // -------------------------------------------------------------- keyboard
 const SHORTCUTS = [
   [["j"], "Next email"], [["k"], "Previous email"], [["o", "Enter"], "Open its actions"],
   [["e"], "Done"], [["r"], "Draft a reply"], [["b"], "Book time (Work emails)"], [["h"], "Hide it until tomorrow"],
   [["#"], "Delete (moves it to Gmail's Trash)"], [["←", "→"], "Previous or next day"], [["t"], "Back to today"],
-  [["p"], "Plan the day you're looking at"], [[","], "Settings"], [["?"], "These shortcuts"], [["Esc"], "Close"],
+  [["p"], "Plan the day you're looking at"], [["n"], "New event"], [["c"], "New email (saved as a draft)"], [["d"], "Drafts"], [[","], "Settings"], [["?"], "These shortcuts"], [["Esc"], "Close"],
 ];
 function openHelp() {
   S.sheet = { kind: "help" };
@@ -2195,6 +2465,9 @@ document.addEventListener("keydown", (e) => {
   else if (k === "ArrowLeft" || k === "ArrowRight") setDay(addDays(S.day, k === "ArrowRight" ? 1 : -1));
   else if (k === "t") setDay(today);
   else if (k === "p" && S.day >= today) openPlan(S.day);
+  else if (k === "n") openNewEvent(S.day);
+  else if (k === "c") openNewEmail();
+  else if (k === "d") openDrafts();
   else if (k === ",") openSettings();
   else if (k === "?") openHelp();
   else if (live && (k === "o" || k === "Enter")) openSheet({ kind: "item", id: live.id });
@@ -2214,6 +2487,9 @@ $("prevDay").addEventListener("click", () => setDay(addDays(S.day, -1)));
 $("nextDay").addEventListener("click", () => setDay(addDays(S.day, 1)));
 $("todayBtn").addEventListener("click", () => setDay(localDay()));
 $("planBtn").addEventListener("click", () => openPlan(S.day));
+$("newEvBtn").addEventListener("click", () => openNewEvent(S.day));
+$("newMailBtn").addEventListener("click", () => openNewEmail());
+$("draftsBtn").addEventListener("click", () => openDrafts());
 render();
 
 (async () => {
