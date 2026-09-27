@@ -19,8 +19,9 @@ Google Calendar through Claude's connectors.
   rules, and save attachments to Google Drive.
 - **Call-backs** with tap to call, and WhatsApp when the email says the number
   is on WhatsApp.
-- **Waiting on others**: mail you sent that hasn't had an answer, summarised,
-  with a nudge draft.
+- **Waiting on others**: mail you sent that asks for something and hasn't
+  had an answer, summarised, with a nudge draft. Notes to yourself, and
+  emails that only share something, are left out.
 - **New email and New event**: write an email yourself or have Claude write
   it from a note, saved to Gmail Drafts; add your own calendar events, such
   as appointments.

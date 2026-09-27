@@ -120,6 +120,11 @@ Every email still waiting on you, sorted by Claude into:
 Each group folds (Show / Hide), and remembers how you left it. The filter
 chips **All · Unread · Call-backs · Work** narrow the list further.
 
+The list follows your Gmail inbox. Emails you reply to, archive or delete in
+Gmail itself leave the Day Sheet at the next refresh, and move to
+**Handled**. **Waiting on others** is different: it comes from mail you
+sent, so an empty inbox doesn't clear it.
+
 ### Start of the week
 
 On the first day of your week (Monday unless you change it in Settings), a
@@ -316,9 +321,15 @@ same on every device you open the Day Sheet on.
 
 ### Further down the page
 
-- **Waiting on others**: mail you sent 2 to 21 days ago with no answer, each
-  with a one-line summary of what you asked for. ⋯ → **Nudge them** drafts a
-  follow-up; **Show what you sent** shows your message.
+- **Waiting on others**: mail you sent 2 to 21 days ago that asks for
+  something and hasn't had an answer, each with a one-line summary of what
+  you asked for. ⋯ → **Nudge them** drafts a follow-up; **Show what you
+  sent** shows your message.
+  - Emails sent only to yourself are left out.
+  - Claude reads each one and leaves out emails that don't need an answer,
+    such as sharing a link or a file, saying thanks, or confirming
+    something. They go to **Handled** as "Not waiting on a reply". If Claude
+    got one wrong, select **Undo** and it comes back.
 - **Reminders later**: items you've hidden, with the day they come back.
 - **Delegated**: with their check-back dates.
 - **Noise and likely spam**: with one-tap Spam and Delete.
